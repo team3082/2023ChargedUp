@@ -14,9 +14,13 @@ public class SwerveManager {
 
     public static void init() {
         m_swerveMods = new SwerveMod[] {
-            new SwerveMod(RobotConfig.steerID0, RobotConfig.driveID0, RobotConfig.swerveModX0, RobotConfig.swerveModY0, RobotConfig.cancoderOffset0, RobotConfig.falconOffset),
+            // Back right
+            new SwerveMod(RobotConfig.steerID0, RobotConfig.driveID0, RobotConfig.swerveModX0, RobotConfig.swerveModY0, RobotConfig.cancoderOffset0, RobotConfig.falconOffset), 
+            // Back left
             new SwerveMod(RobotConfig.steerID1, RobotConfig.driveID1, RobotConfig.swerveModX1,  RobotConfig.swerveModY1,  RobotConfig.cancoderOffset1, RobotConfig.falconOffset),
+            // Front left
             new SwerveMod(RobotConfig.steerID2, RobotConfig.driveID2,  RobotConfig.swerveModX2,  RobotConfig.swerveModY2,  RobotConfig.cancoderOffset2, RobotConfig.falconOffset),
+            // Front right
             new SwerveMod(RobotConfig.steerID3, RobotConfig.driveID3,  RobotConfig.swerveModX3, RobotConfig.swerveModY3,  RobotConfig.cancoderOffset3, RobotConfig.falconOffset),
         };
         tipBlockEnabled = true;
