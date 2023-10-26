@@ -1,0 +1,41 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Launch RobotConfig",
+      "request": "launch",
+      "mainClass": "frc.robot.RobotConfig",
+      "projectName": "2023ChargedUp"
+    },
+    {
+      "type": "java",
+      "name": "Launch Main",
+      "request": "launch",
+      "mainClass": "frc.robot.Main",
+      "projectName": "2023ChargedUp"
+    },
+    {
+      "type": "java",
+      "name": "Launch XPathConfig",
+      "request": "launch",
+      "mainClass": "frc.robot.XPathConfig",
+      "projectName": "2023ChargedUp"
+    },
+    {
+      "type": "wpilib",
+      "name": "WPILib Desktop Debug",
+      "request": "launch",
+      "desktop": true
+    },
+    {
+      "type": "wpilib",
+      "name": "WPILib roboRIO Debug",
+      "request": "launch",
+      "desktop": false
+    }
+  ]
+}

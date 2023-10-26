@@ -1,0 +1,152 @@
+{
+  "NetworkTables": {
+    "FMSInfo": {
+      "open": true
+    },
+    "LiveWindow": {
+      ".status": {
+        "open": true
+      },
+      "open": true
+    },
+    "retained": {
+      "Shuffleboard": {
+        "SmartDashboard": {
+          "Auto Selector": {
+            "open": true
+          },
+          "open": true
+        }
+      }
+    },
+    "transitory": {
+      "Sensors": {
+        "open": true
+      },
+      "Shuffleboard": {
+        "Arm Positions": {
+          "open": true
+        },
+        "Field Views": {
+          "Arm View": {
+            "open": true
+          },
+          "open": true
+        },
+        "Pigeon": {
+          "Pigeon": {
+            "open": true
+          }
+        },
+        "Positions": {
+          "open": true
+        },
+        "Sensors": {
+          "open": true
+        },
+        "SmartDashboard": {
+          "Field View": {
+            "open": true
+          },
+          "PID Controller": {
+            "open": true
+          },
+          "Pigeon 2 [0]": {
+            "open": true
+          }
+        },
+        "open": true
+      },
+      "limelight": {
+        "open": true
+      },
+      "photonvision": {
+        "AprilTag Vision": {
+          "open": true
+        }
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Ungrouped/DigitalOutput[0]": "Digital Output",
+      "/LiveWindow/Ungrouped/DigitalOutput[1]": "Digital Output",
+      "/LiveWindow/Ungrouped/DigitalOutput[2]": "Digital Output",
+      "/LiveWindow/Ungrouped/DigitalOutput[3]": "Digital Output",
+      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
+      "/LiveWindow/Ungrouped/Pigeon 2 [0]": "Gyro",
+      "/Shuffleboard/Field View/Arm View": "Mechanism2d",
+      "/Shuffleboard/Field View/Field View": "Field2d",
+      "/Shuffleboard/Field View/Pigeon": "Gyro",
+      "/Shuffleboard/Field Views/Arm View": "Mechanism2d",
+      "/Shuffleboard/Field Views/Field View": "Field2d",
+      "/Shuffleboard/Field Views/Pigeon": "Gyro",
+      "/Shuffleboard/Pigeon/Pigeon": "Gyro",
+      "/Shuffleboard/Shuffleboard/Arm View": "Mechanism2d",
+      "/Shuffleboard/Shuffleboard/Field View": "Field2d",
+      "/Shuffleboard/Shuffleboard/Pigeon": "Gyro",
+      "/Shuffleboard/SmartDashboard/Arm View": "Mechanism2d",
+      "/Shuffleboard/SmartDashboard/Auto Selector": "String Chooser",
+      "/Shuffleboard/SmartDashboard/Field View": "Field2d",
+      "/Shuffleboard/SmartDashboard/Mode Selector": "String Chooser",
+      "/Shuffleboard/SmartDashboard/PID Controller": "PIDController",
+      "/Shuffleboard/SmartDashboard/Pigeon": "Gyro",
+      "/Shuffleboard/SmartDashboard/Pigeon 2 [0]": "Gyro"
+    },
+    "windows": {
+      "/Shuffleboard/SmartDashboard/Arm View": {
+        "image": "C:\\Dev\\2023ChargedUp\\glass-resources\\arm-bg.png",
+        "window": {
+          "name": "Arm View",
+          "visible": true
+        }
+      },
+      "/Shuffleboard/SmartDashboard/Auto Selector": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/Shuffleboard/SmartDashboard/Field View": {
+        "Robot": {
+          "length": 0.7620000243186951,
+          "width": 0.6349999904632568
+        },
+        "Trajectory": {
+          "arrowSize": 0,
+          "arrows": false,
+          "style": "Line",
+          "weight": 1.0
+        },
+        "bottom": 544,
+        "height": 8.013679504394531,
+        "image": "C:\\Dev\\2023ChargedUp\\glass-resources\\2023-field.png",
+        "left": 46,
+        "right": 1088,
+        "top": 36,
+        "units": "inches",
+        "width": 16.541748046875,
+        "window": {
+          "name": "Field View",
+          "visible": true
+        }
+      },
+      "/Shuffleboard/SmartDashboard/Mode Selector": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "Connections": {
+      "open": true
+    }
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT3)",
+    "serverTeam": "3082"
+  }
+}
