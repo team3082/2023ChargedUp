@@ -114,9 +114,9 @@ public class OI {
                 Vector2 pos = SwervePosition.getPosition();
                 double min = Double.MAX_VALUE;
                 int minI = -1;
-                for(int i = 0; i < 9; i++) {
+                for(int i=0; i<9; i++){
                     double mag = Scoring.getScoringTarget(i).sub(pos).mag();
-                    if(mag < min){
+                    if(mag<min){
                         min = mag;
                         minI = i;
                     }
@@ -135,15 +135,14 @@ public class OI {
 
         // If drivingToPoint is false, we should use driver input
         double boostCoefficient = RobotConfig.joystickMoveScale;
-        if (driverStick.getRawAxis(boost) > .5) {
+        if (driverStick.getRawAxis(boost) > .5){
+            //boostCoefficient += (1-boostCoefficient)*driverStick.getRawAxis(boost);
             boostCoefficient = 1;
         }
-
-        if (driverStick.getRawAxis(LogitechF310.AXIS_LEFT_TRIGGER)>0.5) {
+        if(driverStick.getRawAxis(LogitechF310.AXIS_LEFT_TRIGGER)>0.5){
             boostCoefficient = 0.1;
             rotate *= 0.3;
         }
-
         Vector2 drive = new Vector2(driverStick.getRawAxis(moveX), -driverStick.getRawAxis(moveY));
         if (drive.mag() < 0.05) {
             drive = new Vector2(0, 0);
@@ -189,9 +188,18 @@ public class OI {
                 drivingToNode = false;
                 Vision.setLimelightLED(drivingToNode);
             }
+                
             
             SwerveManager.rotateAndDrive(rotation, movement);
         }
+
+        // if (driverStick.getRawButtonPressed(emergencyArm)) {
+        //     Telemetry.log(Telemetry.Severity.CRITICAL, "ARM", "Emergency retraction enabled.");
+        //     Telemetry.rControl = false;
+        //     // TODO: Make an emergency ArmPosition entry into the enum.
+        //     // Vector2(x,y): (21, 11).
+        //     ArmStateController.controlState(ArmPosition.CUBE_MIDDLE, ArmPosition.CONE_PRIMED);
+        // }
 
         if(driverStick.getRawButtonPressed(LogitechF310.BUTTON_START)){
             Arm.init();
@@ -199,6 +207,17 @@ public class OI {
     }
 
     public static void operatorInput() {
+        // double armXValue = flightStick.getRawAxis(armX);
+        // double armYValue = -flightStick.getRawAxis(armY);
+        //Sets axis values to zero if they are within the deadband
+        // armXValue = (armXValue < armXDead || armXValue > -armXDead) ? armXValue : 0;
+        // armYValue = (armYValue < armYDead || armYValue > -armYDead) ? armYValue : 0;
+        // Vector2 armMove = new Vector2(armXValue, armYValue);
+
+        
+        // if(armMove.mag() > 0.1){
+            // ArmStateController.controlState(ArmControlMode.TRANSLATE, armMove, Arm.manipulatorAngle);
+        // }
 
         double wristAdjust = flightStick.getRawAxis(LogitechF310.AXIS_LEFT_Y);
         if(Math.abs(wristAdjust)>0.2){
