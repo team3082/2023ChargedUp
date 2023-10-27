@@ -36,6 +36,7 @@ public class Robot extends TimedRobot {
 		Arm.init();
 		Manipulator.init();
 		AutoBalancer.init();
+		Scoring.init();
 		OI.init();
 		Telemetry.init();
 		TipProtection.init(false);
@@ -81,6 +82,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		Arm.enableBreak();
+		Scoring.stop();
 		OI.init();
 		if(Auto.endingArmPosition == null)
 			Arm.setState(ArmControlMode.NEUTRAL, null, 0.0);

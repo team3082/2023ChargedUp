@@ -1,7 +1,9 @@
 package frc.robot.subsystems.swerve;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.Robot;
 import frc.robot.subsystems.Pigeon;
 import frc.robot.subsystems.Vision;
 import frc.robot.utils.RTime;
@@ -38,7 +40,7 @@ public class SwervePosition {
         // Derive our velocity 
         Vector2 vel = SwerveManager.getRobotDriveVelocity();
 
-        // Telemetry.log(Severity.INFO, "drive: " + vel);
+        //Telemetry.log(Severity.INFO, "drive: " + vel);
 
         // Rotate our velocity to be local to the field
         vel = vel.rotate(Pigeon.getRotationRad() - Math.PI / 2);
@@ -62,6 +64,10 @@ public class SwervePosition {
             } catch(Exception e) {}
         }
     }
+
+    private static final int numSamples = 50;
+    private static Vector2[] lastSecond = new Vector2[numSamples];
+    private static int index = 0;
 
     public static final double correctionMultiplier = 0.1;
 
@@ -122,5 +128,17 @@ public class SwervePosition {
     public static void setPosition(Vector2 newPosition){
         position = newPosition;
     }
+
+    //returns array of the robot's angle and distance in INCHES based of of sensor velocity
+    // public static double[] angleDistancePositionVelocity(){
+        
+    //     double[] pos = new double[]{xPosition, yPosition};
+        
+    //     double distance = Math.sqrt(Math.pow(pos[0], 2) + Math.pow(pos[1], 2));
+    //     double angle = Math.atan(pos[1]/pos[0])*(180/Math.PI);
+
+    //     return new double[]{angle, distance};
+        
+    // }
 
 }
