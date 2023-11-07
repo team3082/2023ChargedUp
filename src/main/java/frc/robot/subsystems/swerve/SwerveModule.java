@@ -15,9 +15,8 @@ import frc.robot.utils.Vector2;
 import edu.wpi.first.wpilibj.RobotBase;
 
 
-public class SwerveMod {
+public class SwerveModule {
     
-    final boolean variableRenamed = false;
     private static final double ticksPerRotationSteer = RobotConfig.ticksPerRotationSteer;
     private static final double ticksPerRotationDrive = RobotConfig.ticksPerRotationDrive;
 
@@ -36,7 +35,7 @@ public class SwerveMod {
     private double simDriveVel;
 
 
-    public SwerveMod(int steerID, int driveID, double x, double y, double cancoderOffset, double falconOffset) {
+    public SwerveModule(int steerID, int driveID, double x, double y, double cancoderOffset, double falconOffset) {
         steer = new TalonFX(steerID);
         drive = new TalonFX(driveID);
         absEncoder = new CANCoder(steerID);

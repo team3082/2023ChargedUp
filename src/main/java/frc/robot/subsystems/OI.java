@@ -166,8 +166,13 @@ public class OI {
                     diff = diff.norm().mul(RobotConfig.rampingCoefficent);
                     power = power.add(diff);
                 }
+
+                if (driverStick.getRawButtonPressed(LogitechF310.BUTTON_START)) {
+                    // PID test here (?)
+                }
+
                 SwerveManager.rotateAndDrive(rotate, power);
-            }else{
+            } else {
                 SwerveManager.lockWheels();
             }
 
@@ -192,32 +197,9 @@ public class OI {
             
             SwerveManager.rotateAndDrive(rotation, movement);
         }
-
-        // if (driverStick.getRawButtonPressed(emergencyArm)) {
-        //     Telemetry.log(Telemetry.Severity.CRITICAL, "ARM", "Emergency retraction enabled.");
-        //     Telemetry.rControl = false;
-        //     // TODO: Make an emergency ArmPosition entry into the enum.
-        //     // Vector2(x,y): (21, 11).
-        //     ArmStateController.controlState(ArmPosition.CUBE_MIDDLE, ArmPosition.CONE_PRIMED);
-        // }
-
-        if(driverStick.getRawButtonPressed(LogitechF310.BUTTON_START)){
-            Arm.init();
-        }
     }
 
     public static void operatorInput() {
-        // double armXValue = flightStick.getRawAxis(armX);
-        // double armYValue = -flightStick.getRawAxis(armY);
-        //Sets axis values to zero if they are within the deadband
-        // armXValue = (armXValue < armXDead || armXValue > -armXDead) ? armXValue : 0;
-        // armYValue = (armYValue < armYDead || armYValue > -armYDead) ? armYValue : 0;
-        // Vector2 armMove = new Vector2(armXValue, armYValue);
-
-        
-        // if(armMove.mag() > 0.1){
-            // ArmStateController.controlState(ArmControlMode.TRANSLATE, armMove, Arm.manipulatorAngle);
-        // }
 
         double wristAdjust = flightStick.getRawAxis(LogitechF310.AXIS_LEFT_Y);
         if(Math.abs(wristAdjust)>0.2){

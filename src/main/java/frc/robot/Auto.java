@@ -43,27 +43,13 @@ public class Auto {
 
     // CUSTOM AUTOS ================================================
 
-    // Test
+    // PID test
+    // Robot moves forward 10 inches
     public static void test(){
+        Vector2 pos = SwervePosition.getPosition();
         AutoFrame[] frames = new AutoFrame[] {
-            // new SetGrabMode(Piece.CONE),
-            // new SetVision(true),
-            // new Score(3, ScoringTier.TOP, Piece.CONE)
-            // new MoveArm(ArmPosition.CONE_BOTTOM),
-            // new MoveToNode(0),
-            // new Rotate(Math.PI),
-            // new WaitToCompletion(MoveToNode.class),
-            // new MoveTo(-25,-80),
-            // new WaitToCompletion(MoveTo.class),
-            // new Rotate(Math.PI / 2),
-            // new MoveTo(50,-100),
-            // new Recalibrate(false, true, 5),
-            // new Recalibrate(false, true, 1),
-            // new Recalibrate(true, false, 0.25),
-            // new MoveToNode(7)
-            new SetVision(false),
-            new MoveTo(-20, -200),
-
+            new SetVision(false), // we want accurate odometry throughout
+            new MoveTo(new Vector2(pos.x, pos.y + 10))
         };
         queueFrames(frames);
     }
