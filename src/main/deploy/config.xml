@@ -43,15 +43,15 @@
     <SwerveManager>
         <CAN>
             <steerIDs>
-                <steerID0>2</steerID0>
+                <steerID0>6</steerID0>
                 <steerID1>4</steerID1>
-                <steerID2>6</steerID2>
+                <steerID2>2</steerID2>
                 <steerID3>8</steerID3>
             </steerIDs>
             <driveIDs>
-                <driveID0>1</driveID0>
+                <driveID0>5</driveID0>
                 <driveID1>3</driveID1>
-                <driveID2>5</driveID2>
+                <driveID2>1</driveID2>
                 <driveID3>7</driveID3>
             </driveIDs>
         </CAN>
@@ -69,10 +69,10 @@
         </swerveModXs>
         
         <cancoderOffsets>
-            <cancoderOffset0>254.795</cancoderOffset0>
-            <cancoderOffset1>108.721</cancoderOffset1>
-            <cancoderOffset2>136.143</cancoderOffset2>
-            <cancoderOffset3>71.455</cancoderOffset3>
+            <cancoderOffset0>346.816</cancoderOffset0>
+            <cancoderOffset1>166.729</cancoderOffset1>
+            <cancoderOffset2>21.533</cancoderOffset2>
+            <cancoderOffset3>54.756</cancoderOffset3>
         </cancoderOffsets>
         <falconOffset>0</falconOffset>        
     </SwerveManager>
