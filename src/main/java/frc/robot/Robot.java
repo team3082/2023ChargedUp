@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
 		Telemetry.init();
 		TipProtection.init(false);
 		Pigeon.setYaw(270);
+		Scoring.init();
 		Vision.setLimelightLED(false);
         Telemetry.log(Telemetry.Severity.INFO, "ROBOT", "Started Robot.");
 	}

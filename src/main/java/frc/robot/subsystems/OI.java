@@ -124,9 +124,10 @@ public class OI {
                 nodeTargetPiece = ((minI - 2) % 3 == 0) ? Piece.CUBE : Piece.CONE;
 
                 SwervePID.setDestPt(Scoring.getScoringTarget(minI).add(new Vector2(0.8, 3)));
+                //System.out.println(Scoring.getScoringTarget(minI).add(new Vector2(0.8, 3)));
                 SwervePID.setDestRot(3*Math.PI/2);
 
-                Telemetry.log(Severity.DEBUG, "" + nodeTargetPiece);
+                Telemetry.log(Severity.DEBUG, "" + Scoring.getScoringTarget(minI).toString());
             }
         }
 
@@ -299,11 +300,11 @@ public class OI {
             Manipulator.neutral();
         }
 
-        if (Arm.wristMotor.isRevLimitSwitchClosed() == 0) {
-            if(ArmStateController.currentState==ArmPosition.SUBSTATION) {
-                Arm.destAngs[2] = ArmPosition.SUBSTATION.angles[2] + Math.toRadians(60);
-            }
-        }
+        // if (Arm.wristMotor.isRevLimitSwitchClosed() == 0) {
+        //     if(ArmStateController.currentState==ArmPosition.SUBSTATION) {
+        //         Arm.destAngs[2] = ArmPosition.SUBSTATION.angles[2] + Math.toRadians(60);
+        //     }
+        // }
 
         // if(flightStick.getPOV()==LogitechF310.DPAD_RIGHT){
         //     Arm.recalibrateWrist();
