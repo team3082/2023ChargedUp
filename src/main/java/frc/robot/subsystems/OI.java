@@ -8,6 +8,7 @@ import frc.robot.RobotConfig;
 import frc.robot.Scoring;
 import frc.robot.Scoring.ScoringTier;
 import frc.robot.subsystems.Arm.ArmControlMode;
+import frc.robot.subsystems.swerve.SwerveInstruction;
 import frc.robot.subsystems.swerve.SwerveManager;
 import frc.robot.subsystems.swerve.SwervePID;
 import frc.robot.subsystems.swerve.SwervePosition;
@@ -66,6 +67,7 @@ public class OI {
     static boolean armMode;
     static boolean isPrimed;
     public static Piece gamePieceMode;
+    static boolean substation;
 
 
     //static boolean buttonBoardIsPressed = buttonBoard.getRawButton(1) || buttonBoard.getRawButton(2)|| buttonBoard.getRawButton(3) || buttonBoard.getRawButton(1) || buttonBoard.getRawButton(2);
@@ -77,6 +79,7 @@ public class OI {
         flightStick = new Joystick(2);
         autoRotating = false;
         drivingToNode = false;
+        substation = false;
         gamePieceMode = Piece.CONE; Manipulator.setConeMode(); 
     }
 
@@ -123,13 +126,24 @@ public class OI {
                 }
                 nodeTargetPiece = ((minI - 2) % 3 == 0) ? Piece.CUBE : Piece.CONE;
 
-                SwervePID.setDestPt(Scoring.getScoringTarget(minI).add(new Vector2(0.8, 3)));
-                //System.out.println(Scoring.getScoringTarget(minI).add(new Vector2(0.8, 3)));
-                SwervePID.setDestRot(3*Math.PI/2);
-
-                Telemetry.log(Severity.DEBUG, "" + Scoring.getScoringTarget(minI).toString());
+                Vector2 subPos = new Vector2(Vision.aprilTags[3].x, Vision.aprilTags[3].y);
+                if (SwervePosition.getPosition().sub(subPos).mag() < 24) {
+                    substation = true;
+                } else {
+                    substation = false;
+                }
+                
+                if (!substation) {
+                    SwervePID.setDestPt(Scoring.getScoringTarget(minI).add(new Vector2(0.8, 3)));
+                    SwervePID.setDestRot(3*Math.PI/2);
+                } else {
+                    SwervePID.setDestPt(subPos.add(new Vector2(0.8, 3)));
+                    SwervePID.setDestRot(Math.PI / 2);
+                }
+                Telemetry.log(Severity.DEBUG, "" + substation);
             }
         }
+
 
         if (driverStick.getRawButton(pigeonZero))
             Pigeon.zero();
@@ -179,19 +193,32 @@ public class OI {
             }
 
         } else {
-            double angleDeg = Vision.limelight.getXOffset();
-            Telemetry.log(Severity.DEBUG, "" + nodeTargetPiece);
-            double velX = nodeTargetPiece == Piece.CUBE ? SwervePID.updateOutputX() : angleDeg * -0.015;
+            SwerveInstruction instruction;
 
-            Vector2 movement = new Vector2(velX, SwervePID.updateOutputY());
-            double rotation = SwervePID.updateOutputRot();
+            if (substation) {
+                // (From robot POV)
+                // 4 inches back, 4 inches right
+                Vector2 modPos = new Vector2(Vision.aprilTags[3].x, Vision.aprilTags[3].y);
+                SwervePID.setDestPt(modPos);
 
-            if (movement.mag() < 0.001) {
-                drivingToNode = false;
-                Vision.setLimelightLED(drivingToNode);
+                instruction = new SwerveInstruction(SwervePID.updateOutputRot(), SwervePID.updateOutputVel());
+            } else {
+                double angleDeg = Vision.limelight.getXOffset();
+                Telemetry.log(Severity.DEBUG, "" + nodeTargetPiece);
+                double velX = nodeTargetPiece == Piece.CUBE ? SwervePID.updateOutputX() : angleDeg * -0.015;
+
+                Vector2 movement = new Vector2(velX, SwervePID.updateOutputY());
+                double rotation = SwervePID.updateOutputRot();
+
+                instruction = new SwerveInstruction(rotation, movement);
+
+                if (movement.mag() < 0.001) {
+                    drivingToNode = false;
+                    Vision.setLimelightLED(drivingToNode);
+                }
             }
             
-            SwerveManager.rotateAndDrive(rotation, movement);
+            SwerveManager.rotateAndDrive(instruction);
         }
 
         if(driverStick.getRawButtonPressed(LogitechF310.BUTTON_START)){

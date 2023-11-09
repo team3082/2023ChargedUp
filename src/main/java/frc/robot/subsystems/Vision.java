@@ -55,7 +55,7 @@ public class Vision {
     }; */
 
     //Position in inches straight from the game manual. See https://www.desmos.com/calculator/ctcioi3gyj
-    private static final Vector2[] aprilTags = {
+    public static final Vector2[] aprilTags = {
         new Vector2(RobotConfig.firstX, RobotConfig.gridY),
         new Vector2(RobotConfig.secondX, RobotConfig.gridY),
         new Vector2(RobotConfig.thirdX, RobotConfig.gridY),
