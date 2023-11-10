@@ -9,22 +9,26 @@ import frc.robot.utils.Vector2;
 
 public class SwerveManager {
 
-    public static SwerveMod[] m_swerveMods;
+    public static SwerveModule[] m_swerveMods;
     public static boolean tipBlockEnabled;
 
     public static void init() {
-        m_swerveMods = new SwerveMod[] {
-            new SwerveMod(RobotConfig.steerID0, RobotConfig.driveID0, RobotConfig.swerveModX0, RobotConfig.swerveModY0, RobotConfig.cancoderOffset0, RobotConfig.falconOffset),
-            new SwerveMod(RobotConfig.steerID1, RobotConfig.driveID1, RobotConfig.swerveModX1,  RobotConfig.swerveModY1,  RobotConfig.cancoderOffset1, RobotConfig.falconOffset),
-            new SwerveMod(RobotConfig.steerID2, RobotConfig.driveID2,  RobotConfig.swerveModX2,  RobotConfig.swerveModY2,  RobotConfig.cancoderOffset2, RobotConfig.falconOffset),
-            new SwerveMod(RobotConfig.steerID3, RobotConfig.driveID3,  RobotConfig.swerveModX3, RobotConfig.swerveModY3,  RobotConfig.cancoderOffset3, RobotConfig.falconOffset),
+        m_swerveMods = new SwerveModule[] {
+            // Back right
+            new SwerveModule(RobotConfig.steerID0, RobotConfig.driveID0, RobotConfig.swerveModX0, RobotConfig.swerveModY0, RobotConfig.cancoderOffset0, RobotConfig.falconOffset), 
+            // Back left
+            new SwerveModule(RobotConfig.steerID1, RobotConfig.driveID1, RobotConfig.swerveModX1,  RobotConfig.swerveModY1,  RobotConfig.cancoderOffset1, RobotConfig.falconOffset),
+            // Front left
+            new SwerveModule(RobotConfig.steerID2, RobotConfig.driveID2,  RobotConfig.swerveModX2,  RobotConfig.swerveModY2,  RobotConfig.cancoderOffset2, RobotConfig.falconOffset),
+            // Front right
+            new SwerveModule(RobotConfig.steerID3, RobotConfig.driveID3,  RobotConfig.swerveModX3, RobotConfig.swerveModY3,  RobotConfig.cancoderOffset3, RobotConfig.falconOffset),
         };
         tipBlockEnabled = true;
     }
     
     // Zero the encoder output of each of the steering motors
     public static void zeroSteeringEncoders() {
-        for (SwerveMod mod : m_swerveMods) {
+        for (SwerveModule mod : m_swerveMods) {
             mod.resetSteerSensor();
         }
     }
@@ -123,7 +127,7 @@ public class SwerveManager {
      */
     public static Vector2 getRobotDriveVelocity() {
         Vector2 velSum = new Vector2();
-        for (SwerveMod mod : m_swerveMods) {
+        for (SwerveModule mod : m_swerveMods) {
             velSum = velSum.add(Vector2.fromPolar(mod.getSteerAngle(), mod.getDriveVelocity()));
         }
 
@@ -149,11 +153,11 @@ public class SwerveManager {
     }
 
     public static void pointWheels(double radians) {
-        for (SwerveMod mSwerveMod : m_swerveMods) mSwerveMod.rotateToRad(radians);
+        for (SwerveModule mSwerveMod : m_swerveMods) mSwerveMod.rotateToRad(radians);
     }
 
     public static void calibrationTest() {
-        for (SwerveMod mSwerveMod : m_swerveMods) {
+        for (SwerveModule mSwerveMod : m_swerveMods) {
             mSwerveMod.steer.set(TalonFXControlMode.MotionMagic, 0);
             mSwerveMod.drive.set(TalonFXControlMode.PercentOutput, 0.1);
         }
@@ -163,7 +167,7 @@ public class SwerveManager {
      * Locks the robot in position by rotating all wheels towards the center of the robot
      */
     public static void lockWheels(){
-        for(SwerveMod mSwerveMod : m_swerveMods){
+        for(SwerveModule mSwerveMod : m_swerveMods){
             mSwerveMod.steer.setNeutralMode(NeutralMode.Brake);
             mSwerveMod.drive.setNeutralMode(NeutralMode.Brake);
             mSwerveMod.rotateToRad(mSwerveMod.pos.atan2());

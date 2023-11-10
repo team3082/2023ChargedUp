@@ -12,8 +12,11 @@ import frc.robot.subsystems.swerve.SwerveManager;
 import frc.robot.subsystems.swerve.SwervePID;
 import frc.robot.subsystems.swerve.SwervePosition;
 import frc.robot.subsystems.swerve.TipProtection;
+import frc.robot.trajectory.Trajectory;
+import frc.robot.trajectory.Waypoint;
 import frc.robot.utils.AutoSelection;
 import frc.robot.utils.RTime;
+import frc.robot.utils.Vector2;
 
 // Comp repo test
 
@@ -21,6 +24,14 @@ import frc.robot.utils.RTime;
 public class Robot extends TimedRobot {
 	public static boolean teleauto = false;
 	public static Joystick testFlightstick;
+	public Trajectory traj = new Trajectory(
+			new Vector2(-19.39, -279), 
+			new Vector2(-22.39, -47.36), 
+			new Waypoint(new Vector2(-40, -150), Math.PI / 2, null), 
+			new Waypoint(new Vector2(-22.39, -75), Math.PI / 2, Waypoint.actions.GROUND), 
+			0.3
+			);
+	public static boolean auto;
 
 	@Override
 	public void robotInit() {
@@ -36,6 +47,7 @@ public class Robot extends TimedRobot {
 		Arm.init();
 		Manipulator.init();
 		AutoBalancer.init();
+		Scoring.init();
 		OI.init();
 		Telemetry.init();
 		TipProtection.init(false);
@@ -43,6 +55,7 @@ public class Robot extends TimedRobot {
 		Scoring.init();
 		Vision.setLimelightLED(false);
         Telemetry.log(Telemetry.Severity.INFO, "ROBOT", "Started Robot.");
+		auto = false;
 	}
 
 	@Override
@@ -61,26 +74,30 @@ public class Robot extends TimedRobot {
 		RTime.init();
 		Pigeon.setYaw(270);
 		// SwerveManager.pointWheels(0);
-		AutoSelection.run();
+		//AutoSelection.run();
 		SwervePosition.disableVision();
+		auto = true;
 	}
 
 	@Override
 	public void autonomousPeriodic() {
 		RTime.update();
 		SwervePosition.update();
-		Auto.update();
+		//Auto.update();
+		SwerveManager.rotateAndDrive(traj.updateDest());
 		Arm.update();
 		Manipulator.update();
 	}
 	@Override 
 	public void autonomousExit(){
 		Vision.setLimelightLED(false);
+		auto = false;
 	}
 
 	@Override
 	public void teleopInit() {
 		Arm.enableBreak();
+		Scoring.stop();
 		OI.init();
 		if(Auto.endingArmPosition == null)
 			Arm.setState(ArmControlMode.NEUTRAL, null, 0.0);
