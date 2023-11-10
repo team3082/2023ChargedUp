@@ -191,14 +191,14 @@ public class Telemetry {
         power.add("PDP", robotPD);
 
         // Start WPILib data logging thingy
-        DataLogManager.start();
-        FRClogger = DataLogManager.getLog();
+        //DataLogManager.start();
+       // FRClogger = DataLogManager.getLog();
 
         // Create logging directories on the roboRIO
-        criticalLogs = new StringLogEntry(FRClogger, "/logs/critical");
-        warningLogs = new StringLogEntry(FRClogger, "/logs/warning");
-        debugLogs = new StringLogEntry(FRClogger, "/logs/debug");
-        infoLogs = new StringLogEntry(FRClogger, "/logs/info");
+        // criticalLogs = new StringLogEntry(FRClogger, "/logs/critical");
+        // warningLogs = new StringLogEntry(FRClogger, "/logs/warning");
+        // debugLogs = new StringLogEntry(FRClogger, "/logs/debug");
+        // infoLogs = new StringLogEntry(FRClogger, "/logs/info");
     }
 
     /**
@@ -233,7 +233,7 @@ public class Telemetry {
         }
         String fullMessage = "[" + RTime.createTimestamp() + "]" + " [" + severity + "] " + "(" + subsystem + "):" + " " + message;
         System.out.println(color + fullMessage + ANSI_RESET);
-        targetLog.setMetadata(fullMessage);
+        //targetLog.setMetadata(fullMessage);
     }
 
     /**

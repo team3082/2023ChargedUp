@@ -86,6 +86,8 @@ public class Scoring {
     public static void init(){
         currentProgress = Progress.NOT_SCORING;
         //                             14.25 is the length of the ground dividers (p. 27 of manual)
+        // -285.16 + 14.25 + 3.25 + 15
+        // scoringY = -252.66;
         scoringY = RobotConfig.gridY + 14.25 + RobotConfig.bumperThickness + (RobotConfig.frameLength/2);
         yBuffer = RobotConfig.yBuffer;
     }

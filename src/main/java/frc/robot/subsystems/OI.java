@@ -1,13 +1,18 @@
 
 package frc.robot.subsystems;
 
+import java.util.Vector;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Auto;
 import frc.robot.Robot;
 import frc.robot.RobotConfig;
 import frc.robot.Scoring;
 import frc.robot.Scoring.ScoringTier;
 import frc.robot.subsystems.Arm.ArmControlMode;
+import frc.robot.subsystems.swerve.SwerveInstruction;
 import frc.robot.subsystems.swerve.SwerveManager;
 import frc.robot.subsystems.swerve.SwervePID;
 import frc.robot.subsystems.swerve.SwervePosition;
@@ -66,7 +71,10 @@ public class OI {
     static boolean armMode;
     static boolean isPrimed;
     public static Piece gamePieceMode;
+    static boolean substation;
 
+    //Position of the substation april tag
+    static Vector2 subPos;
 
     //static boolean buttonBoardIsPressed = buttonBoard.getRawButton(1) || buttonBoard.getRawButton(2)|| buttonBoard.getRawButton(3) || buttonBoard.getRawButton(1) || buttonBoard.getRawButton(2);
 
@@ -77,7 +85,10 @@ public class OI {
         flightStick = new Joystick(2);
         autoRotating = false;
         drivingToNode = false;
+        substation = true;
         gamePieceMode = Piece.CONE; Manipulator.setConeMode(); 
+        
+        subPos = new Vector2(RobotConfig.loadingX, -RobotConfig.loadingY);
     }
 
     public static void joystickInput() {
@@ -106,43 +117,55 @@ public class OI {
             autoRotating = false;
         }
 
+        
         // Funny button
         if(driverStick.getRawButtonPressed(driveToNode)){
-            drivingToNode = !drivingToNode;
+            drivingToNode = true;
             Vision.setLimelightLED(drivingToNode);
-            if(drivingToNode){
-                Vector2 pos = SwervePosition.getPosition();
-                double min = Double.MAX_VALUE;
-                int minI = -1;
-                for(int i=0; i<9; i++){
-                    double mag = Scoring.getScoringTarget(i).sub(pos).mag();
-                    if(mag<min){
-                        min = mag;
-                        minI = i;
-                    }
+            Vector2 pos = SwervePosition.getPosition();
+            double min = Double.MAX_VALUE;
+            int minI = -1;
+            for(int i = 0; i < 9; i++) {
+                double mag = Scoring.getScoringTarget(i).sub(pos).mag();
+                if(mag < min){
+                    min = mag;
+                    minI = i;
                 }
-                nodeTargetPiece = ((minI - 2) % 3 == 0) ? Piece.CUBE : Piece.CONE;
+            }
+            nodeTargetPiece = ((minI - 2) % 3 == 0) ? Piece.CUBE : Piece.CONE;
 
+            // Check if should go to substation
+            if (SwervePosition.getPosition().sub(subPos).mag() < 120) {
+                substation = true;
+            } else {
+                substation = false;
+            }
+            
+            if (!substation) {
                 SwervePID.setDestPt(Scoring.getScoringTarget(minI).add(new Vector2(0.8, 3)));
                 SwervePID.setDestRot(3*Math.PI/2);
-
-                Telemetry.log(Severity.DEBUG, "" + nodeTargetPiece);
+            } else {
+                SwervePID.setDestPt(subPos.add(new Vector2(0, -48)));
+                SwervePID.setDestRot(Math.PI / 2);
             }
+            Telemetry.log(Severity.DEBUG, "" + SwervePID.getDest().toString());
         }
+
 
         if (driverStick.getRawButton(pigeonZero))
             Pigeon.zero();
 
         // If drivingToPoint is false, we should use driver input
         double boostCoefficient = RobotConfig.joystickMoveScale;
-        if (driverStick.getRawAxis(boost) > .5){
-            //boostCoefficient += (1-boostCoefficient)*driverStick.getRawAxis(boost);
+        if (driverStick.getRawAxis(boost) > .5) {
             boostCoefficient = 1;
         }
-        if(driverStick.getRawAxis(LogitechF310.AXIS_LEFT_TRIGGER)>0.5){
+
+        if (driverStick.getRawAxis(LogitechF310.AXIS_LEFT_TRIGGER)>0.5) {
             boostCoefficient = 0.1;
             rotate *= 0.3;
         }
+
         Vector2 drive = new Vector2(driverStick.getRawAxis(moveX), -driverStick.getRawAxis(moveY));
         if (drive.mag() < 0.05) {
             drive = new Vector2(0, 0);
@@ -166,13 +189,8 @@ public class OI {
                     diff = diff.norm().mul(RobotConfig.rampingCoefficent);
                     power = power.add(diff);
                 }
-
-                if (driverStick.getRawButtonPressed(LogitechF310.BUTTON_START)) {
-                    // PID test here (?)
-                }
-
                 SwerveManager.rotateAndDrive(rotate, power);
-            } else {
+            }else{
                 SwerveManager.lockWheels();
             }
 
@@ -182,20 +200,34 @@ public class OI {
             }
 
         } else {
-            double angleDeg = Vision.limelight.getXOffset();
-            Telemetry.log(Severity.DEBUG, "" + nodeTargetPiece);
-            double velX = nodeTargetPiece == Piece.CUBE ? SwervePID.updateOutputX() : angleDeg * -0.015;
+            SwerveInstruction instruction;
 
-            Vector2 movement = new Vector2(velX, SwervePID.updateOutputY());
-            double rotation = SwervePID.updateOutputRot();
-
-            if (movement.mag() < 0.001) {
-                drivingToNode = false;
-                Vision.setLimelightLED(drivingToNode);
-            }
+            if (substation) { // Update SwervePID based off of the position set above.
                 
+                instruction = new SwerveInstruction(SwervePID.updateOutputRot(), SwervePID.updateOutputVel());
+
+            } else { // Otherwise continue with normal auto-align shenanigans
+                double angleDeg = Vision.limelight.getXOffset();
+                Telemetry.log(Severity.DEBUG, "" + substation);
+                double velX = nodeTargetPiece == Piece.CUBE ? SwervePID.updateOutputX() : angleDeg * -0.015;
+
+                Vector2 movement = new Vector2(velX, SwervePID.updateOutputY());
+                double rotation = SwervePID.updateOutputRot();
+
+                instruction = new SwerveInstruction(rotation, movement);
+
+                if (movement.mag() < 0.001) {
+                    drivingToNode = false;
+                    substation = false;
+                    Vision.setLimelightLED(drivingToNode);
+                }
+            }
             
-            SwerveManager.rotateAndDrive(rotation, movement);
+            SwerveManager.rotateAndDrive(instruction);
+        }
+
+        if(driverStick.getRawButtonPressed(LogitechF310.BUTTON_START)){
+            Arm.init();
         }
     }
 
@@ -300,11 +332,11 @@ public class OI {
             Manipulator.neutral();
         }
 
-        if (Arm.wristMotor.isRevLimitSwitchClosed() == 0) {
-            if(ArmStateController.currentState==ArmPosition.SUBSTATION) {
-                Arm.destAngs[2] = ArmPosition.SUBSTATION.angles[2] + Math.toRadians(60);
-            }
-        }
+        // if (Arm.wristMotor.isRevLimitSwitchClosed() == 0) {
+        //     if(ArmStateController.currentState==ArmPosition.SUBSTATION) {
+        //         Arm.destAngs[2] = ArmPosition.SUBSTATION.angles[2] + Math.toRadians(60);
+        //     }
+        // }
 
         // if(flightStick.getPOV()==LogitechF310.DPAD_RIGHT){
         //     Arm.recalibrateWrist();
