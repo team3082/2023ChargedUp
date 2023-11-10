@@ -134,7 +134,7 @@ public class OI {
             }
             nodeTargetPiece = ((minI - 2) % 3 == 0) ? Piece.CUBE : Piece.CONE;
 
-            //Check if should go to substation
+            // Check if should go to substation
             if (SwervePosition.getPosition().sub(subPos).mag() < 120) {
                 substation = true;
             } else {
@@ -202,13 +202,11 @@ public class OI {
         } else {
             SwerveInstruction instruction;
 
-            if (substation) {
-                // (From robot POV)
-                // // 4 inches back, 4 inches right
-                // SwervePID.setDestPt(subPos.add(new Vector2(0, -48)));
-
+            if (substation) { // Update SwervePID based off of the position set above.
+                
                 instruction = new SwerveInstruction(SwervePID.updateOutputRot(), SwervePID.updateOutputVel());
-            } else {
+
+            } else { // Otherwise continue with normal auto-align shenanigans
                 double angleDeg = Vision.limelight.getXOffset();
                 Telemetry.log(Severity.DEBUG, "" + substation);
                 double velX = nodeTargetPiece == Piece.CUBE ? SwervePID.updateOutputX() : angleDeg * -0.015;
