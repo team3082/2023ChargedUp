@@ -146,7 +146,7 @@
     }
   },
   "NetworkTables Settings": {
-    "mode": "Client (NT3)",
+    "mode": "Client (NT4)",
     "serverTeam": "3082"
   }
 }

@@ -1,7 +1,11 @@
 
 package frc.robot.subsystems;
 
+import java.util.Vector;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Auto;
 import frc.robot.Robot;
 import frc.robot.RobotConfig;
@@ -69,6 +73,8 @@ public class OI {
     public static Piece gamePieceMode;
     static boolean substation;
 
+    //Position of the substation april tag
+    static Vector2 subPos;
 
     //static boolean buttonBoardIsPressed = buttonBoard.getRawButton(1) || buttonBoard.getRawButton(2)|| buttonBoard.getRawButton(3) || buttonBoard.getRawButton(1) || buttonBoard.getRawButton(2);
 
@@ -79,8 +85,10 @@ public class OI {
         flightStick = new Joystick(2);
         autoRotating = false;
         drivingToNode = false;
-        substation = false;
+        substation = true;
         gamePieceMode = Piece.CONE; Manipulator.setConeMode(); 
+        
+        subPos = new Vector2(RobotConfig.loadingX, -RobotConfig.loadingY);
     }
 
     public static void joystickInput() {
@@ -109,39 +117,38 @@ public class OI {
             autoRotating = false;
         }
 
+        
         // Funny button
         if(driverStick.getRawButtonPressed(driveToNode)){
-            drivingToNode = !drivingToNode;
+            drivingToNode = true;
             Vision.setLimelightLED(drivingToNode);
-            if(drivingToNode){
-                Vector2 pos = SwervePosition.getPosition();
-                double min = Double.MAX_VALUE;
-                int minI = -1;
-                for(int i = 0; i < 9; i++) {
-                    double mag = Scoring.getScoringTarget(i).sub(pos).mag();
-                    if(mag < min){
-                        min = mag;
-                        minI = i;
-                    }
+            Vector2 pos = SwervePosition.getPosition();
+            double min = Double.MAX_VALUE;
+            int minI = -1;
+            for(int i = 0; i < 9; i++) {
+                double mag = Scoring.getScoringTarget(i).sub(pos).mag();
+                if(mag < min){
+                    min = mag;
+                    minI = i;
                 }
-                nodeTargetPiece = ((minI - 2) % 3 == 0) ? Piece.CUBE : Piece.CONE;
-
-                Vector2 subPos = new Vector2(Vision.aprilTags[3].x, Vision.aprilTags[3].y);
-                if (SwervePosition.getPosition().sub(subPos).mag() < 24) {
-                    substation = true;
-                } else {
-                    substation = false;
-                }
-                
-                if (!substation) {
-                    SwervePID.setDestPt(Scoring.getScoringTarget(minI).add(new Vector2(0.8, 3)));
-                    SwervePID.setDestRot(3*Math.PI/2);
-                } else {
-                    SwervePID.setDestPt(subPos.add(new Vector2(0.8, 3)));
-                    SwervePID.setDestRot(Math.PI / 2);
-                }
-                Telemetry.log(Severity.DEBUG, "" + substation);
             }
+            nodeTargetPiece = ((minI - 2) % 3 == 0) ? Piece.CUBE : Piece.CONE;
+
+            //Check if should go to substation
+            if (SwervePosition.getPosition().sub(subPos).mag() < 120) {
+                substation = true;
+            } else {
+                substation = false;
+            }
+            
+            if (!substation) {
+                SwervePID.setDestPt(Scoring.getScoringTarget(minI).add(new Vector2(0.8, 3)));
+                SwervePID.setDestRot(3*Math.PI/2);
+            } else {
+                SwervePID.setDestPt(subPos.add(new Vector2(0, -48)));
+                SwervePID.setDestRot(Math.PI / 2);
+            }
+            Telemetry.log(Severity.DEBUG, "" + SwervePID.getDest().toString());
         }
 
 
@@ -197,14 +204,13 @@ public class OI {
 
             if (substation) {
                 // (From robot POV)
-                // 4 inches back, 4 inches right
-                Vector2 modPos = new Vector2(Vision.aprilTags[3].x, Vision.aprilTags[3].y);
-                SwervePID.setDestPt(modPos);
+                // // 4 inches back, 4 inches right
+                // SwervePID.setDestPt(subPos.add(new Vector2(0, -48)));
 
                 instruction = new SwerveInstruction(SwervePID.updateOutputRot(), SwervePID.updateOutputVel());
             } else {
                 double angleDeg = Vision.limelight.getXOffset();
-                Telemetry.log(Severity.DEBUG, "" + nodeTargetPiece);
+                Telemetry.log(Severity.DEBUG, "" + substation);
                 double velX = nodeTargetPiece == Piece.CUBE ? SwervePID.updateOutputX() : angleDeg * -0.015;
 
                 Vector2 movement = new Vector2(velX, SwervePID.updateOutputY());
@@ -214,6 +220,7 @@ public class OI {
 
                 if (movement.mag() < 0.001) {
                     drivingToNode = false;
+                    substation = false;
                     Vision.setLimelightLED(drivingToNode);
                 }
             }

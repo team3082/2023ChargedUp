@@ -204,17 +204,29 @@ public class Arm {
 
         wristMotor = new TalonSRX(RobotConfig.wristMotorID);
         wristMotor.configFactoryDefault();
-        wristMotor.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.NormallyOpen);
-        wristMotor.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.NormallyOpen);
-        wristCoder = new CANCoder(14);
-        wristCoder.configFactoryDefault();
+        wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+        wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 1, 0);
+        double newWristPos = wristMotor.getSelectedSensorPosition(1) - 873;
+        if(newWristPos < -Math.PI){
+            newWristPos += 2*Math.PI;
+        } else if(newWristPos > Math.PI){
+            newWristPos -= 2*Math.PI;
+        }
+        wristMotor.setSelectedSensorPosition(newWristPos, 0, 0);
 
-        // PI/2 to -PI/2 radians
-        wristCoder.configFeedbackCoefficient(2 * Math.PI / 4096.0, "rad", SensorTimeBase.PerSecond);
-        wristCoder.setPosition(wristCoder.getAbsolutePosition() - RobotConfig.wristCoderOffset);
+        // wristMotor = new TalonSRX(RobotConfig.wristMotorID);
+        // wristMotor.configFactoryDefault();
+        // wristMotor.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.NormallyOpen);
+        // wristMotor.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.NormallyOpen);
+        // wristCoder = new CANCoder(14);
+        // wristCoder.configFactoryDefault();
 
-        wristMotor.configRemoteFeedbackFilter(wristCoder, 0);
-        wristMotor.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0, 0, 0);
+        // // PI/2 to -PI/2 radians
+        // wristCoder.configFeedbackCoefficient(2 * Math.PI / 4096.0, "rad", SensorTimeBase.PerSecond);
+        // wristCoder.setPosition(wristCoder.getAbsolutePosition() - RobotConfig.wristCoderOffset);
+
+        // wristMotor.configRemoteFeedbackFilter(wristCoder, 0);
+        // wristMotor.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0, 0, 0);
         
         wristMotor.setSensorPhase(true);
         //wristMotor.setInverted(true);

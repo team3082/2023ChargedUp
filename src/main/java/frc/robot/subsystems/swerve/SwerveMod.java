@@ -70,7 +70,7 @@ public class SwerveMod {
 		drive.configMotionAcceleration(400, 30);
         
         
-        drive.setInverted(false);
+        drive.setInverted(true);
         steer.setInverted(false);
         drive.setNeutralMode(NeutralMode.Brake);
         steer.setNeutralMode(NeutralMode.Brake);
