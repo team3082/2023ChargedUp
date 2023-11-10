@@ -69,10 +69,10 @@
         </swerveModXs>
         
         <cancoderOffsets>
-            <cancoderOffset0>346.816</cancoderOffset0>
-            <cancoderOffset1>166.729</cancoderOffset1>
-            <cancoderOffset2>21.533</cancoderOffset2>
-            <cancoderOffset3>54.756</cancoderOffset3>
+            <cancoderOffset0>244.863</cancoderOffset0>
+            <cancoderOffset1>347.432</cancoderOffset1>
+            <cancoderOffset2>199.600</cancoderOffset2>
+            <cancoderOffset3>232.207</cancoderOffset3>
         </cancoderOffsets>
         <falconOffset>0</falconOffset>        
     </SwerveManager>
