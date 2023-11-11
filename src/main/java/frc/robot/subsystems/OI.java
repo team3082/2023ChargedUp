@@ -259,7 +259,7 @@ public class OI {
             }
             isPrimed = true;
         }else if(flightStick.getRawButtonPressed(armDisable)){
-            Arm.setState(ArmControlMode.NEUTRAL, null, 0);
+            Arm.setStateNeutral();
         }else if (flightStick.getPOV() == substationPickup){
             switch(gamePieceMode){
                 case CUBE: ArmStateController.controlState(ArmPosition.SUBSTATION); break;

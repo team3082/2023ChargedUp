@@ -93,7 +93,7 @@ public class Scoring {
 
     public static void stop(){
         currentProgress = Progress.NOT_SCORING;
-        Arm.setState(ArmControlMode.NEUTRAL, null, 0);
+        Arm.setStateNeutral();
     }
 
     /**

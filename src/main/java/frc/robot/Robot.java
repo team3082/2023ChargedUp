@@ -84,7 +84,7 @@ public class Robot extends TimedRobot {
 		Scoring.stop();
 		OI.init();
 		if(Auto.endingArmPosition == null)
-			Arm.setState(ArmControlMode.NEUTRAL, null, 0.0);
+			Arm.setStateNeutral();
 		else
 			Arm.setState(Auto.endingArmPosition);
 		SwervePosition.enableVision();
@@ -119,7 +119,7 @@ public class Robot extends TimedRobot {
 		Arm.enableBreak();
 		testFlightstick = new Joystick(3);
 		// Arm.setState(Arm.ArmPosition.PRIMED);
-		Arm.setState(ArmControlMode.NEUTRAL, null, 0.0);
+		Arm.setStateNeutral();
 		// Sensing.init();
 		SwerveManager.pointWheels(0);
 	}

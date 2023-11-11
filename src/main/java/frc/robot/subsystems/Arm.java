@@ -26,7 +26,7 @@ public class Arm {
     // theta=0 is straight out, theta=pi/2 is straight up, theta=-pi/2 is straight down
 
     public enum ArmControlMode{
-        POSITION, TRANSLATE, NEUTRAL, PROFILE, SEQUENTIAL;
+        POSITION, NEUTRAL, PROFILE, SEQUENTIAL;
     }
 
     public enum KinematicsMode {
@@ -244,7 +244,7 @@ public class Arm {
         wristMotor.configContinuousCurrentLimit(20); //...we deploy a 20A continuous limit.
         wristMotor.enableCurrentLimit(true); // Enable current limit.
 
-        setState(ArmControlMode.NEUTRAL, null, 0);
+        setStateNeutral();
         enableBreak();
 
         //setting equal to elbow position in primed
@@ -388,34 +388,10 @@ public class Arm {
     // ==== Actual Control ====
 
     private static Vector2 destPos;
-    /**
-    * Set the state of the arm
-    * @param mode Arm control mode, either POSITON or TRANSLATE
-    * @param input The main movement data to apply. 
-    *   In position mode: The X, Y location to move the wrist joint to. 
-    *   In translate mode: The translational velocity for the wrist joint [-1,1].
-    * @param manipAng The desired angle (relative to the ground) of the manipulator.
-    */
-    public static void setState(ArmControlMode mode, Vector2 input, double manipAng){
-        stopProfile();
-        Arm.mode = mode;
-        switch(mode){
-            case POSITION:
-                destAngs = calculateAngles(input, manipAng);
-                destPos = input;
-                manipulatorAngle = manipAng;
-                break;
-            case TRANSLATE:
-                transVel = input;
-                manipulatorAngle = manipAng;
-                break;
-            case NEUTRAL:
-                //Don't need to do anything. We're just going to use the AFFs
-                break;
-        }
-    }
+    
     public static void setStateNeutral(){
-        setState(ArmControlMode.NEUTRAL, null, 0);
+        stopProfile();
+        Arm.mode = ArmControlMode.NEUTRAL;
     }
 
     /**
@@ -571,57 +547,6 @@ public class Arm {
                 }
                 break;
 
-
-            case TRANSLATE:
-                /*
-                When in manual control there are a few constraints we need to impose.
-                1 - The furthest point out must be within 48". (game rule)
-                2 - The lowest point should not go into the ground. (self explanatory)
-                Constraints 1 & 2 must be applied to the translational velocity
-                Constraint 3 must be appplied to the rotational velocity of the shoulder. 
-                  (This may lead to unpredictable impacts on the translation. This is ok. The operator shouldn't be doing much manual control up high)
-                There are some potential errors with the way I have done this:
-                  Does not account for the manipulator being a rectangle instead of a line
-                  Does not account for the forearm structure that extends past wrist joint
-                As such there is some padding so it limits to 46" & 2" above ground
-                */
-                
-                // Linearly smooth movement into stop at 46"
-                // If over 46" it should be negative & so should come back
-
-                // double extension = Math.abs(manipulatorAngle)>=Math.PI/2 ? getWristPos().x : getManipTipPos().x - (RobotConfig.frameLength/2.0);
-                // if(extension > 44.0){
-                //     transVel.x = Math.min(transVel.x, -0.5*(extension-46));
-                // }
-                // double minY = Math.min(getWristPos().y, getManipTipPos().y);
-                // if(minY < 4.0){
-                //     transVel.y = Math.max(transVel.y, -0.5*(minY-2));
-                // }
-
-                double[] angVels = calculateAngVels(transVel);
-                double m = Math.max(angVels[0], angVels[1]);
-                if(m>1){ // normalize
-                    angVels[0] /= m;
-                    angVels[1] /= m;
-                }
-                angVels[0] *= 1; // Clamping
-                angVels[1] *= 1;
-
-                // Compensate for gear ratio (assumes elbow has higher than shoulder)
-                final double shldrRatio = 75 * (28.0/12.0);
-                final double elbowRatio = 75 * (28.0/15.0);
-                double diff = shldrRatio/elbowRatio;
-                angVels[0] *= diff;
-
-                double wristT = manipulatorAngle - (getShldrTheta() + getElbowTheta());
-                
-                shldrMotor.set(ControlMode.PercentOutput, angVels[0], DemandType.ArbitraryFeedForward, AFFs[0]);
-                elbowMotor.set(ControlMode.PercentOutput, angVels[1], DemandType.ArbitraryFeedForward, AFFs[1]);
-                wristMotor.set(ControlMode.MotionMagic, wristT-wristOffset, DemandType.ArbitraryFeedForward, AFFs[2]);
-
-                break;
-
-
             case PROFILE:
             System.out.printf("%.3f, %.3f, %.3f \n", shldrMotor.getActiveTrajectoryVelocity(), elbowMotor.getActiveTrajectoryVelocity(), wristMotor.getActiveTrajectoryVelocity());
                 
@@ -719,8 +644,6 @@ public class Arm {
         switch(mode){
             case POSITION:
                 return destPos.sub(getWristPos()).mag() < 5.;
-            case TRANSLATE:
-                return transVel.mag() < armTransDead;
             case PROFILE:
                 return shldrMotor.isMotionProfileFinished() && elbowMotor.isMotionProfileFinished() && wristMotor.isMotionProfileFinished();
             default:
