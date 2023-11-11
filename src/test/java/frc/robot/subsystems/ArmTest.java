@@ -5,13 +5,7 @@ import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;
 
 import frc.robot.subsystems.Arm.ArmPosition;
 import frc.robot.utils.Vector2;
-import java.util.LinkedList;
-import java.util.Timer;
-import java.util.stream.Stream;
-
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
-import java.util.concurrent.TimeUnit;
 
 public class ArmTest{
 

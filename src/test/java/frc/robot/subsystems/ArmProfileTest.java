@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import frc.robot.subsystems.Arm.ArmPosition;
 
 import frc.robot.utils.Vector2;

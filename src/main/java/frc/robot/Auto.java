@@ -9,13 +9,10 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import com.ctre.phoenixpro.controls.NeutralOut;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Scoring.ScoringTier;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Pigeon;
 import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.Vision;

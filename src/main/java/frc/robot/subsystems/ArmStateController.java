@@ -71,15 +71,6 @@ public class ArmStateController {
         }   
     }
 
-    private static void substationGrabbedController(ArmPosition nextPosition) {
-        switch(currentState) {
-            case SUBSTATION:
-                Arm.setState(ArmPosition.SUBSTATION_GRABBED);
-            default: 
-                break;
-        }
-    }
-
     private static void defaultController(ArmPosition nextPosition) {
         switch(currentState) {
             case STARTING:

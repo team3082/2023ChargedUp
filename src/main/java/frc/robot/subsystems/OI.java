@@ -7,7 +7,6 @@ import frc.robot.Robot;
 import frc.robot.RobotConfig;
 import frc.robot.Scoring;
 import frc.robot.Scoring.ScoringTier;
-import frc.robot.subsystems.Arm.ArmControlMode;
 import frc.robot.subsystems.swerve.SwerveManager;
 import frc.robot.subsystems.swerve.SwervePID;
 import frc.robot.subsystems.swerve.SwervePosition;
@@ -31,7 +30,6 @@ public class OI {
     static final int driveToNode = LogitechF310.BUTTON_A;
     static final int parkingBrake = LogitechF310.BUTTON_B;
     public static final int balance = LogitechF310.BUTTON_X;
-    //TODO noah chooses keybind. currently a toggle, but feel free to change
     
 
     // static final int armX = 100;
@@ -196,7 +194,6 @@ public class OI {
         // if (driverStick.getRawButtonPressed(emergencyArm)) {
         //     Telemetry.log(Telemetry.Severity.CRITICAL, "ARM", "Emergency retraction enabled.");
         //     Telemetry.rControl = false;
-        //     // TODO: Make an emergency ArmPosition entry into the enum.
         //     // Vector2(x,y): (21, 11).
         //     ArmStateController.controlState(ArmPosition.CUBE_MIDDLE, ArmPosition.CONE_PRIMED);
         // }

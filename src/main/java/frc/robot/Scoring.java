@@ -4,7 +4,6 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.Arm.ArmControlMode;
 import frc.robot.subsystems.Arm.ArmPosition;
 import frc.robot.subsystems.swerve.SwerveInstruction;
 import frc.robot.subsystems.swerve.SwervePID;
