@@ -26,7 +26,7 @@ public class Arm {
     // theta=0 is straight out, theta=pi/2 is straight up, theta=-pi/2 is straight down
 
     public enum ArmControlMode{
-        POSITION, TRANSLATE, NEUTRAL, PROFILE
+        POSITION, TRANSLATE, NEUTRAL, PROFILE, SEQUENTIAL;
     }
 
     public enum KinematicsMode {
@@ -246,6 +246,10 @@ public class Arm {
 
         setState(ArmControlMode.NEUTRAL, null, 0);
         enableBreak();
+
+        //setting equal to elbow position in primed
+        elbowSeqPos = calculateAngles(new Vector2(15,26), 0)[1];
+        
     }
 
     public static void disableBreak(){
@@ -643,8 +647,55 @@ public class Arm {
                 elbowMotor.set(ControlMode.PercentOutput, 0, DemandType.ArbitraryFeedForward, AFFs[1]);
                 wristMotor.set(ControlMode.PercentOutput, 0, DemandType.ArbitraryFeedForward, AFFs[2]);
                 break;
+            
+            case SEQUENTIAL:
+                if(!elbowAtInt){
+                    //stage 1
+                    if(Math.abs(getElbowTheta() - elbowSeqPos) < elbowSeqDead){
+                        elbowAtInt = true;
+                    }
+                    shldrMotor.set(ControlMode.MotionMagic, radToTicks(getShldrTheta()), DemandType.ArbitraryFeedForward, AFFs[0]);
+                    elbowMotor.set(ControlMode.MotionMagic, radToTicks(elbowSeqPos), DemandType.ArbitraryFeedForward, AFFs[1]);
+                    wristMotor.set(ControlMode.MotionMagic, radToTicks(destAngs[2]-wristOffset), DemandType.ArbitraryFeedForward, AFFs[2]);
+                }else if(!shldrAtPos){
+                    //stage 2
+                    if(Math.abs(getShldrTheta() - destAngs[0]) < shldrSeqDead){
+                        shldrAtPos = true;
+                    }
+                    shldrMotor.set(ControlMode.MotionMagic, radToTicks(destAngs[0]), DemandType.ArbitraryFeedForward, AFFs[0]);
+                    elbowMotor.set(ControlMode.MotionMagic, radToTicks(elbowSeqPos), DemandType.ArbitraryFeedForward, AFFs[1]);
+                    wristMotor.set(ControlMode.MotionMagic, radToTicks(destAngs[2]-wristOffset), DemandType.ArbitraryFeedForward, AFFs[2]);
+                }else{
+                    //final stage
+                    shldrMotor.set(ControlMode.MotionMagic, radToTicks(destAngs[0]), DemandType.ArbitraryFeedForward, AFFs[0]);
+                    elbowMotor.set(ControlMode.MotionMagic, radToTicks(destAngs[1]), DemandType.ArbitraryFeedForward, AFFs[1]);
+                    wristMotor.set(ControlMode.MotionMagic, radToTicks(destAngs[2]-wristOffset), DemandType.ArbitraryFeedForward, AFFs[2]);
+                }
+                
         }
     }
+
+    //SEQUENTIAL MODE FIELDS
+    static boolean elbowAtInt;
+    static boolean shldrAtPos;
+    //deadband in radians for shoulder position
+    static final double shldrSeqDead = Math.PI/16;
+    static double elbowSeqPos;
+    static final double elbowSeqDead = Math.PI/16;
+
+    public static void setStateSequential(ArmPosition pos){
+        stopProfile();
+        Arm.mode = ArmControlMode.SEQUENTIAL;
+        destPos = pos.position;
+        destAngs = pos.angles.clone();
+        manipulatorAngle = pos.angles[0] + pos.angles[1] + pos.angles[2];
+
+        ArmStateController.currentState = pos;
+        elbowAtInt = false;
+        shldrAtPos = false;
+    }
+
+    
 
     /**
      * Recalibrates the wrist if the forward or reverse limit switch is closed, and rotates it upward if `recalibratingWrist` is true
