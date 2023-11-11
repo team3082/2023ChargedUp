@@ -38,22 +38,17 @@
             "open": true
           }
         },
-        "Positions": {
-          "open": true
-        },
         "Sensors": {
           "open": true
         },
         "SmartDashboard": {
-          "Field View": {
-            "open": true
-          },
           "PID Controller": {
             "open": true
           },
           "Pigeon 2 [0]": {
             "open": true
-          }
+          },
+          "open": true
         },
         "open": true
       },
@@ -61,9 +56,10 @@
         "open": true
       },
       "photonvision": {
-        "AprilTag Vision": {
+        "AprilTag Vision ": {
           "open": true
-        }
+        },
+        "open": true
       }
     },
     "types": {

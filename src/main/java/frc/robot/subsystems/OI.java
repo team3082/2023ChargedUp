@@ -145,7 +145,7 @@ public class OI {
                 SwervePID.setDestPt(Scoring.getScoringTarget(minI).add(new Vector2(0.8, 3)));
                 SwervePID.setDestRot(3*Math.PI/2);
             } else {
-                SwervePID.setDestPt(subPos.add(new Vector2(0, -48)));
+                SwervePID.setDestPt(subPos.add(new Vector2(-10, -45)));
                 SwervePID.setDestRot(Math.PI / 2);
             }
             Telemetry.log(Severity.DEBUG, "" + SwervePID.getDest().toString());
