@@ -538,4 +538,15 @@ public class Auto {
         
     }
 
+    public static void testSwervePID() {
+        AutoFrame[] frames = {
+            new SetGrabMode(Piece.CONE),
+            new Rotate(Math.PI/2.0),
+            new WaitToCompletion(Rotate.class),
+            new SetGrabMode(Piece.CUBE)
+        };
+
+        queueFrames(frames);
+    }
+
 }
