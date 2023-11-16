@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.subsystems.Arm.ArmPosition;
+import frc.robot.subsystems.Telemetry.Severity;
 import frc.robot.utils.Piece;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -71,12 +72,12 @@ public class Manipulator {
         }
         try {
             // Telemetry.log(Severity.DEBUG, "Distance: " + Sensing.getDistance(Unit.kInches));
-            if (Arm.wristMotor.isRevLimitSwitchClosed() == 0) {
+            if (Telemetry.getProximity() < 1000) {
                 if(ArmStateController.currentState==ArmPosition.SUBSTATION) {
                     Arm.destAngs[2] = ArmPosition.SUBSTATION.angles[2] + Math.toRadians(60);
                 }
                 autoGrabbing = true;
-                // Telemetry.log(Severity.DEBUG, "Auto grabbing");
+                Telemetry.log(Severity.DEBUG, "Auto grabbing");
                 return;
             }
         } catch (Exception e) {}

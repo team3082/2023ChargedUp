@@ -9,6 +9,8 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -164,6 +166,9 @@ public class Telemetry {
     // Power monitoring
     private static final GenericEntry intakePower = power.add("Intake Current", Manipulator.intakeCurrent).getEntry();
 
+    // Proximity sensor from the color sensor
+    public static NetworkTableEntry proximity;
+
     // Public object attached to the wpilib data logger
     public static DataLog FRClogger;
 
@@ -190,15 +195,7 @@ public class Telemetry {
         robotPD = new PowerDistribution(0, ModuleType.kCTRE);
         power.add("PDP", robotPD);
 
-        // Start WPILib data logging thingy
-        //DataLogManager.start();
-       // FRClogger = DataLogManager.getLog();
-
-        // Create logging directories on the roboRIO
-        // criticalLogs = new StringLogEntry(FRClogger, "/logs/critical");
-        // warningLogs = new StringLogEntry(FRClogger, "/logs/warning");
-        // debugLogs = new StringLogEntry(FRClogger, "/logs/debug");
-        // infoLogs = new StringLogEntry(FRClogger, "/logs/info");
+        proximity = NetworkTableInstance.getDefault().getEntry("proximity1");
     }
 
     /**
@@ -245,6 +242,14 @@ public class Telemetry {
     public static void log(Severity severity, String message) {
         String caller = Thread.currentThread().getStackTrace()[2].getClassName();
         log(severity, caller, message);
+    }
+
+    /**
+     * Fetch the value returned from the proximity sensor
+     * @return the value from the proximity sensor
+     */
+    public static double getProximity() {
+        return proximity.getDouble(0);
     }
 
     /**
