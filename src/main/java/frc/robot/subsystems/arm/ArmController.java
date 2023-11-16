@@ -134,5 +134,47 @@ public class ArmController {
         });
     }
 
+    protected static SimpleMatrix calcForwardMatrixb0(double[] jv){
+        double c0 = Math.cos(jv[0]);
+        double s0 = Math.sin(jv[0]);
+        return new SimpleMatrix(4,4, true, new double[]{
+            c0, -s0, 0, l0 * c0,
+            s0, c0, 0, l0 * s0,
+            0, 0, 1, jv[0],
+            0,0,0,1
+        });
+    }
+
+    protected static SimpleMatrix calcForwardMatrix01(double[] jv){
+        double c1 = Math.cos(jv[1]);
+        double s1 = Math.sin(jv[1]);
+        return new SimpleMatrix(4,4, true, new double[]{
+            c1, -s1, 0, l1 * c1,
+            s1, c1, 0, l1 * s1,
+            0, 0, 1, jv[1],
+            0,0,0,1
+        });
+    }
+
+    protected static SimpleMatrix calcForwardMatrix12(double[] jv){
+        double c2 = Math.cos(jv[2]);
+        double s2 = Math.sin(jv[2]);
+        return new SimpleMatrix(4,4, true, new double[]{
+            c2, -s2, 0, l2 * c2,
+            s2, c2, 0, l2 * s2,
+            0, 0, 1, jv[2],
+            0,0,0,1
+        });
+    }
+
+    protected static SimpleMatrix calcForwardMatrixb2(double[] jv){
+        SimpleMatrix tb0 = calcForwardMatrixb0(jv);
+        SimpleMatrix t01 = calcForwardMatrix01(jv);
+        SimpleMatrix t12 = calcForwardMatrix12(jv);
+
+        return tb0.mult(t01).mult(t12);
+    }
+
+    
     
 }

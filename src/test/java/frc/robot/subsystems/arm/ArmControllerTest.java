@@ -34,15 +34,15 @@ public class ArmControllerTest {
     }
 
     @Test
-    public void massMatrixBenchmark(){
-        double[] jv = {0.000146471,0.002546542,3.45743};
-        int start = (int) System.currentTimeMillis();
-        for(int i = 0; i < 1000; i++){
-            jv[0] = (jv[0] * 2394) % 3;
-            jv[1] = (jv[1] * 2494) % 3;
-            jv[2] = (jv[2] * 2334) % 3;
-            ArmController.calculateMassMatrix2(jv);
-        }
-        System.out.println((int) System.currentTimeMillis() - start);
+    public void transformationTest(){
+        double[] jv = {Math.PI/2, Math.PI/2,Math.PI/2};
+        SimpleMatrix input = new SimpleMatrix(4,1,false,new double[]{0,0,0,1});
+        SimpleMatrix transform = ArmController.calcForwardMatrixb2(jv);
+        SimpleMatrix expected = new SimpleMatrix(4,1,false, new double[]{-26,10,3*Math.PI/2,1});
+
+        var result = transform.mult(input);
+        System.out.println(result);
+        System.out.println(expected);
+        assertTrue(result.isIdentical(expected, 0.1));
     }
 }
