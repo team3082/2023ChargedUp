@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
@@ -13,6 +13,9 @@ import com.ctre.phoenix.sensors.SensorTimeBase;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.RobotConfig;
+import frc.robot.subsystems.arm.ArmStateController;
+import frc.robot.subsystems.ProfileGenerator;
+import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.Telemetry.Severity;
 import frc.robot.utils.RTime;
 import frc.robot.utils.Vector2;

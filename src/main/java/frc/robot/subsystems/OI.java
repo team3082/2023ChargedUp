@@ -11,7 +11,6 @@ import frc.robot.Robot;
 import frc.robot.RobotConfig;
 import frc.robot.Scoring;
 import frc.robot.Scoring.ScoringTier;
-import frc.robot.subsystems.Arm.ArmControlMode;
 import frc.robot.subsystems.swerve.SwerveInstruction;
 import frc.robot.subsystems.swerve.SwerveManager;
 import frc.robot.subsystems.swerve.SwervePID;
@@ -20,8 +19,11 @@ import frc.robot.utils.RMath;
 import frc.robot.utils.Vector2;
 import frc.robot.utils.Piece;
 import frc.controllermaps.LogitechF310;
-import frc.robot.subsystems.Arm.ArmPosition;
 import frc.robot.subsystems.Telemetry.Severity;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmStateController;
+import frc.robot.subsystems.arm.Arm.ArmControlMode;
+import frc.robot.subsystems.arm.Arm.ArmPosition;
 
 public class OI {
     public static Joystick driverStick;

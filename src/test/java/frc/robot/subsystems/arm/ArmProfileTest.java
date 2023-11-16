@@ -1,10 +1,11 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.arm;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-import frc.robot.subsystems.Arm.ArmPosition;
 
+import frc.robot.subsystems.ProfileGenerator;
+import frc.robot.subsystems.arm.Arm.ArmPosition;
 import frc.robot.utils.Vector2;
 
 public class ArmProfileTest {

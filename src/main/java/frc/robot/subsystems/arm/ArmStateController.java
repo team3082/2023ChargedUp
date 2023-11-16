@@ -1,6 +1,7 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.arm;
 
-import frc.robot.subsystems.Arm.ArmPosition;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.Arm.ArmPosition;
 
 public class ArmStateController {
 

@@ -1,7 +1,7 @@
 package frc.robot.autoframe;
 
-import frc.robot.subsystems.Arm.ArmPosition;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.Arm.ArmPosition;
 
 public class MoveArmProfile extends AutoFrame {
     protected ArmPosition pos;

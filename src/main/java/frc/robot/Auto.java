@@ -14,13 +14,13 @@ import com.ctre.phoenixpro.controls.NeutralOut;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Scoring.ScoringTier;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Pigeon;
 import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.Arm.ArmPosition;
 import frc.robot.subsystems.Telemetry.Severity;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.Arm.ArmPosition;
 import frc.robot.subsystems.swerve.*;
 
 import frc.robot.autoframe.*;

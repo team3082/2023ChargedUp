@@ -3,7 +3,8 @@ package frc.robot.subsystems;
 import java.util.LinkedList;
 import com.ctre.phoenix.motion.TrajectoryPoint;
 
-import frc.robot.subsystems.Arm.ArmPosition;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.Arm.ArmPosition;
 import frc.robot.utils.Vector2;
 
 import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;

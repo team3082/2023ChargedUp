@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj.DataLogManager;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.swerve.SwervePID;
 import frc.robot.subsystems.swerve.SwervePosition;
 import frc.robot.utils.AutoSelection;

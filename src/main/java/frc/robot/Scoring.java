@@ -1,11 +1,11 @@
 package frc.robot;
 
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.Arm.ArmControlMode;
-import frc.robot.subsystems.Arm.ArmPosition;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.Arm.ArmControlMode;
+import frc.robot.subsystems.arm.Arm.ArmPosition;
 import frc.robot.subsystems.swerve.SwerveInstruction;
 import frc.robot.subsystems.swerve.SwervePID;
 import frc.robot.subsystems.swerve.SwervePosition;

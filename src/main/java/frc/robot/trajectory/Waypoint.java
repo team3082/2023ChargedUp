@@ -1,8 +1,8 @@
 package frc.robot.trajectory;
 
-import frc.robot.subsystems.ArmStateController;
+import frc.robot.subsystems.arm.ArmStateController;
 import frc.robot.subsystems.Telemetry;
-import frc.robot.subsystems.Arm.ArmPosition;
+import frc.robot.subsystems.arm.Arm.ArmPosition;
 import frc.robot.utils.Vector2;
 
 public class Waypoint {
