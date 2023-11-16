@@ -24,9 +24,9 @@
             <moveSpeedMax>0.3</moveSpeedMax>
         </posPID>
         <rotPID>
-            <rotP>0.825</rotP>
+            <rotP>0.65</rotP>
             <rotI>0.005</rotI>
-            <rotD>0.002</rotD>
+            <rotD>0.004</rotD>
             <rotDead>0.025</rotDead>
             <rotVelDead>0.01</rotVelDead>
             <rotSpeedMax>0.3</rotSpeedMax>

@@ -34,7 +34,7 @@ public class AutoSelection {
         autoChooser.addOption("Edge Auto", "Edge Auto");
         autoChooser.addOption("Middle Auto", "Middle Auto");
         autoChooser.addOption("Test", "Test");
-
+        
         pieceMode.setDefaultOption("CUBE", "CUBE");
         pieceMode.addOption("CONE", "CONE");
     }
@@ -91,7 +91,7 @@ public class AutoSelection {
             break;
 
             case "Test":
-                Auto.experimentalSubstation();
+                Auto.testSwervePID();
             break;
         }
 

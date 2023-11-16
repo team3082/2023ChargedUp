@@ -9,6 +9,15 @@
       },
       "open": true
     },
+    "Persistent Values": {
+      "open": false
+    },
+    "Retained Values": {
+      "open": false
+    },
+    "Transitory Values": {
+      "open": false
+    },
     "retained": {
       "Shuffleboard": {
         "SmartDashboard": {
@@ -37,6 +46,9 @@
           "Pigeon": {
             "open": true
           }
+        },
+        "Rot PID": {
+          "open": true
         },
         "Sensors": {
           "open": true
