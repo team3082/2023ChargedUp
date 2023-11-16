@@ -23,8 +23,8 @@ public class ArmControllerTest {
     public void massMatrixTest(){
         double[] jv = {2,1,2};
         try{
-        var m1 = ArmController.calculateMassMatrix(jv);
-        var m2 = ArmController.calculateMassMatrix2(jv);
+        var m1 = ArmController.calcMassMatrix(jv);
+        var m2 = ArmController.calcMassMatrix2(jv);
         System.out.println(m1);
         System.out.println(m2);
         assertTrue(m1.isIdentical(m2, 1));
@@ -44,5 +44,12 @@ public class ArmControllerTest {
         System.out.println(result);
         System.out.println(expected);
         assertTrue(result.isIdentical(expected, 0.1));
+    }
+
+    @Test
+    public void naiveGravityTest(){
+        var a = ArmController.calcGravityTorques(new double[]{Math.PI/2,0,0});
+        System.out.println(a);
+        assertTrue(a.isIdentical(new SimpleMatrix(3,1), 0.1));
     }
 }

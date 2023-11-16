@@ -31,7 +31,7 @@ public class ArmController {
      * @param jointVector
      * @return
      */
-    protected static SimpleMatrix calculateMassMatrix(double[] jv){
+    protected static SimpleMatrix calcMassMatrix(double[] jv){
         //This is going to be stinky, so don't bother debugging
         double c1 = Math.cos(jv[1]);
         double c2 = Math.cos(jv[2]);
@@ -69,16 +69,16 @@ public class ArmController {
         return link0MassMatrix.plus(link1MassMatrix).plus(link2MassMatrix);
     }
 
-    protected static SimpleMatrix calculateMassMatrix2(double[] jv){
+    protected static SimpleMatrix calcMassMatrix2(double[] jv){
         //individual mass matrixes in coordinate space
         SimpleMatrix link0M = SimpleMatrix.diag(m0,m0,i0);
         SimpleMatrix link1M = SimpleMatrix.diag(m1,m1,i1);
         SimpleMatrix link2M = SimpleMatrix.diag(m2,m2,i2);
 
         //finding link mass matrices in joint space
-        SimpleMatrix j0 = calculateJacobianLink0(jv);
-        SimpleMatrix j1 = calculateJacobianLink1(jv);
-        SimpleMatrix j2 = calculateJacobianLink2(jv);
+        SimpleMatrix j0 = calcJacobianLink0(jv);
+        SimpleMatrix j1 = calcJacobianLink1(jv);
+        SimpleMatrix j2 = calcJacobianLink2(jv);
         SimpleMatrix link0MassMatrix = j0.transpose().mult(link0M).mult(j0);
         SimpleMatrix link1MassMatrix = j1.transpose().mult(link1M).mult(j1);
         SimpleMatrix link2MassMatrix = j2.transpose().mult(link2M).mult(j2);
@@ -86,7 +86,7 @@ public class ArmController {
         return link0MassMatrix.plus(link1MassMatrix).plus(link2MassMatrix);
     }
 
-    protected static SimpleMatrix calculateJacobianEndEffector(double[] jv){
+    protected static SimpleMatrix calcJacobianEndEffector(double[] jv){
         double s012 = Math.sin(jv[0] + jv[1] + jv[2]);
         double s01 = Math.sin(jv[0] + jv[1]);
         double c012 = Math.cos(jv[0] + jv[1] + jv[2]);
@@ -100,7 +100,7 @@ public class ArmController {
     }
 
 
-    protected static SimpleMatrix calculateJacobianLink0(double[] jv){
+    protected static SimpleMatrix calcJacobianLink0(double[] jv){
         return new SimpleMatrix(3,3,true,new double[]{
             -r0 * Math.sin(jv[0]), 0,0,
             r0 * Math.cos(jv[0]), 0,0,
@@ -108,7 +108,7 @@ public class ArmController {
         });
     }
 
-    protected static SimpleMatrix calculateJacobianLink1(double[] jv){
+    protected static SimpleMatrix calcJacobianLink1(double[] jv){
         double s01 = Math.sin(jv[0] + jv[1]);
         double s0 = Math.sin(jv[0]);
         double c01 = Math.cos(jv[0] + jv[1]);
@@ -121,7 +121,7 @@ public class ArmController {
         });
     }
 
-    protected static SimpleMatrix calculateJacobianLink2(double[] jv){
+    protected static SimpleMatrix calcJacobianLink2(double[] jv){
         double s012 = Math.sin(jv[0] + jv[1] + jv[2]);
         double s01 = Math.sin(jv[0] + jv[1]);
         double c012 = Math.cos(jv[0] + jv[1] + jv[2]);
@@ -173,6 +173,24 @@ public class ArmController {
         SimpleMatrix t12 = calcForwardMatrix12(jv);
 
         return tb0.mult(t01).mult(t12);
+    }
+
+    /**
+     * returns a columb vector containing the torques created by gravity
+     * @param jv
+     * @return
+     */
+    protected static SimpleMatrix calcGravityTorques(double[] jv){
+        SimpleMatrix j0 = calcJacobianLink0(jv);
+        SimpleMatrix j1 = calcJacobianLink1(jv);
+        SimpleMatrix j2 = calcJacobianLink2(jv);
+        
+        SimpleMatrix fg0 = new SimpleMatrix(3,1,false,new double[]{0,-m0,0});
+        SimpleMatrix fg1 = new SimpleMatrix(3,1,false,new double[]{0,-m1,0});
+        SimpleMatrix fg2 = new SimpleMatrix(3,1,false,new double[]{0,-m2,0});
+
+        SimpleMatrix fg = j0.transpose().mult(fg0).plus(j1.transpose().mult(fg1)).plus(j2.transpose().mult(fg2));
+        return fg;
     }
 
     
