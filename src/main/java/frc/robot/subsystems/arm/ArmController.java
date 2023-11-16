@@ -6,6 +6,7 @@ import org.ejml.simple.*;
 
 import frc.robot.utils.RTime;
 
+//all units are terms of inches, seconds, pounds, and radians
 public class ArmController {
     //Constants. All units in inches, secounds, and pounds
     //TODO get moment of inertia values
@@ -28,8 +29,8 @@ public class ArmController {
     
     /**
      * calculates the inertia matrix, which transforms joint accelerations to joint torques
-     * @param jointVector
-     * @return
+     * @param jointVector vector containing the joint angles
+     * @return joint space inertia matrix
      */
     protected static SimpleMatrix calcMassMatrix(double[] jv){
         //This is going to be stinky, so don't bother debugging
@@ -69,6 +70,11 @@ public class ArmController {
         return link0MassMatrix.plus(link1MassMatrix).plus(link2MassMatrix);
     }
 
+    /**
+     * calculates the inertia matrix, which transforms joint accelerations to joint torques
+     * @param jointVector vector containing the joint angles
+     * @return joint space inertia matrix
+     */
     protected static SimpleMatrix calcMassMatrix2(double[] jv){
         //individual mass matrixes in coordinate space
         SimpleMatrix link0M = SimpleMatrix.diag(m0,m0,i0);
@@ -86,6 +92,11 @@ public class ArmController {
         return link0MassMatrix.plus(link1MassMatrix).plus(link2MassMatrix);
     }
 
+    /** 
+     * Calculates the jacobian for the endeffector. Relates joint space velocities to operational space velocities
+     * @param jv joint angle vector
+     * @return endeffector javobian
+    */
     protected static SimpleMatrix calcJacobianEndEffector(double[] jv){
         double s012 = Math.sin(jv[0] + jv[1] + jv[2]);
         double s01 = Math.sin(jv[0] + jv[1]);
@@ -99,7 +110,11 @@ public class ArmController {
         });
     }
 
-
+    /**
+     * calculates jacobian for link 0 COM. Relates joint velocities to cartesian velocities of the com
+     * @param jv joint vector
+     * @return Link zero COM jacobian
+     */
     protected static SimpleMatrix calcJacobianLink0(double[] jv){
         return new SimpleMatrix(3,3,true,new double[]{
             -r0 * Math.sin(jv[0]), 0,0,
@@ -108,6 +123,11 @@ public class ArmController {
         });
     }
 
+    /**
+     * calculates jacobian for link 1 COM. Relates joint velocities to cartesian velocities of the com
+     * @param jv joint vector
+     * @return Link one COM jacobian
+     */
     protected static SimpleMatrix calcJacobianLink1(double[] jv){
         double s01 = Math.sin(jv[0] + jv[1]);
         double s0 = Math.sin(jv[0]);
@@ -121,6 +141,11 @@ public class ArmController {
         });
     }
 
+    /**
+     * calculates jacobian for link 2 COM. Relates joint velocities to cartesian velocities of the com
+     * @param jv joint vector
+     * @return Link two COM jacobian
+     */
     protected static SimpleMatrix calcJacobianLink2(double[] jv){
         double s012 = Math.sin(jv[0] + jv[1] + jv[2]);
         double s01 = Math.sin(jv[0] + jv[1]);
@@ -134,6 +159,11 @@ public class ArmController {
         });
     }
 
+    /**
+     * calculates matrix to convert from elbow coordinates to base coordinates
+     * @param jv joint vector
+     * @return elbow to base matrix
+     */
     protected static SimpleMatrix calcForwardMatrixb0(double[] jv){
         double c0 = Math.cos(jv[0]);
         double s0 = Math.sin(jv[0]);
@@ -145,6 +175,11 @@ public class ArmController {
         });
     }
 
+    /**
+     * calculates matrix to convert from wrist coordinates to elbow coordinates
+     * @param jv joint vector
+     * @return wrist to elbow matrix
+     */
     protected static SimpleMatrix calcForwardMatrix01(double[] jv){
         double c1 = Math.cos(jv[1]);
         double s1 = Math.sin(jv[1]);
@@ -156,6 +191,11 @@ public class ArmController {
         });
     }
 
+    /**
+     * calculates matrix to convert from end effector coordinates to wrist coordinates
+     * @param jv joint vector
+     * @return End effector to wrist matrix
+     */
     protected static SimpleMatrix calcForwardMatrix12(double[] jv){
         double c2 = Math.cos(jv[2]);
         double s2 = Math.sin(jv[2]);
@@ -167,6 +207,11 @@ public class ArmController {
         });
     }
 
+    /**
+     * calculates matrix to convert from endeffector coordinates to base coordinates
+     * @param jv joint vector
+     * @return Forward Kinematics Matrix
+     */
     protected static SimpleMatrix calcForwardMatrixb2(double[] jv){
         SimpleMatrix tb0 = calcForwardMatrixb0(jv);
         SimpleMatrix t01 = calcForwardMatrix01(jv);
@@ -176,14 +221,16 @@ public class ArmController {
     }
 
     /**
-     * returns a columb vector containing the torques created by gravity
-     * @param jv
-     * @return
+     * returns a 3x1 column vector containing the torques created by gravity
+     * @param jv joint vector
+     * @return gravity torques
      */
     protected static SimpleMatrix calcGravityTorques(double[] jv){
         SimpleMatrix j0 = calcJacobianLink0(jv);
         SimpleMatrix j1 = calcJacobianLink1(jv);
         SimpleMatrix j2 = calcJacobianLink2(jv);
+
+
         
         SimpleMatrix fg0 = new SimpleMatrix(3,1,false,new double[]{0,-m0,0});
         SimpleMatrix fg1 = new SimpleMatrix(3,1,false,new double[]{0,-m1,0});
@@ -193,6 +240,17 @@ public class ArmController {
         return fg;
     }
 
-    
+    /**
+     * calculates the needed motor torques to produce a given acceleration in joint space
+     */
+    protected static SimpleMatrix calcTorques(double[] jv, double[] desAccel){
+        SimpleMatrix mass = calcMassMatrix(jv);
+        SimpleMatrix gravity = calcGravityTorques(jv);
+        SimpleMatrix accel = new SimpleMatrix(3,1,false,desAccel);
+
+        SimpleMatrix motorTorques = mass.mult(accel).minus(gravity);
+        return motorTorques;
+    }
+
     
 }
