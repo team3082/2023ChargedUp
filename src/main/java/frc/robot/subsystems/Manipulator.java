@@ -72,7 +72,7 @@ public class Manipulator {
         }
         try {
             // Telemetry.log(Severity.DEBUG, "Distance: " + Sensing.getDistance(Unit.kInches));
-            if (Telemetry.getProximity() < 1000) {
+            if (Telemetry.getProximity() > 150) {
                 if(ArmStateController.currentState==ArmPosition.SUBSTATION) {
                     Arm.destAngs[2] = ArmPosition.SUBSTATION.angles[2] + Math.toRadians(60);
                 }
