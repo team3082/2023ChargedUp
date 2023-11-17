@@ -162,7 +162,7 @@ public class OI {
             boostCoefficient = 1;
         }
         if(driverStick.getRawAxis(LogitechF310.AXIS_LEFT_TRIGGER)>0.5){
-            boostCoefficient = 0.1;
+            boostCoefficient = 0.3;
             rotate *= 0.3;
         }
         Vector2 drive = new Vector2(driverStick.getRawAxis(moveX), -driverStick.getRawAxis(moveY));
