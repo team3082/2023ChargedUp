@@ -7,7 +7,7 @@ import org.ejml.simple.*;
 import frc.robot.utils.RTime;
 
 //all units are terms of inches, seconds, pounds, and radians
-public class ArmController {
+public class ArmDynamics {
     //Constants. All units in inches, secounds, and pounds
     //TODO get moment of inertia values
     static double g = -386.0885826772;
@@ -243,8 +243,7 @@ public class ArmController {
     /**
      * calculates the needed motor torques to produce a given acceleration in joint space
      */
-    protected static SimpleMatrix calcTorques(double[] jv, double[] desAccel){
-        SimpleMatrix mass = calcMassMatrix(jv);
+    protected static SimpleMatrix calcTorques(double[] jv, double[] desAccel, SimpleMatrix mass){
         SimpleMatrix gravity = calcGravityTorques(jv);
         SimpleMatrix accel = new SimpleMatrix(3,1,false,desAccel);
 
@@ -252,5 +251,34 @@ public class ArmController {
         return motorTorques;
     }
 
-    
+    /**
+     * converts from cartesian coordinates to joint coordinates
+     * @param cv cartesian vector (x,y,theta)
+     * @return joint vector (q0,q1,q2)
+     */
+    protected static double[] inverseKinematics(double[] cv){
+        double x1 = cv[0] - l2 * Math.cos(cv[2]);
+        double y1 = cv[1] - l2 * Math.sin(cv[2]);
+        double q1 = Math.acos((Math.pow(x1,2) + Math.pow(y1,2) - Math.pow(l1,2) - Math.pow(l0,2))/(2 * l0 * l1));
+        double q0 = Math.atan2(y1,x1) - Math.atan2(l1 * Math.sin(q1), l0 + l1 * Math.cos(q1));
+        //clamping q0
+        q0 = (q0 + 3 * Math.PI) % (Math.PI * 2) - Math.PI;
+        double q2 = cv[2] - q1 - q0;
+        
+        return new double[]{q0,q1,q2};
+    }
+
+    /**
+     * gives the end effector position in cartesian space given its position in joint space
+     * @param jv joint vector (q0,q1,q2)
+     * @return cartesian vector (x,y,theta)
+     */
+    protected static double[] forwardKinematics(double[] jv){
+        return new double[] {
+            l0 * Math.cos(jv[0]) + l1 * Math.cos(jv[0] + jv[1]) + l2 * Math.cos(jv[0] + jv[1] + jv[2]),
+            l0 * Math.sin(jv[0]) + l1 * Math.sin(jv[0] + jv[1]) + l2 * Math.sin(jv[0] + jv[1] + jv[2]),
+            jv[0] + jv[1] + jv[2]
+        };
+    }
+
 }
