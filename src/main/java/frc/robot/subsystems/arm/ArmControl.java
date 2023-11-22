@@ -27,6 +27,8 @@ public class ArmControl {
 
     private static ControlMode currentMode = ControlMode.POSITION;
 
+    private static double[] desJv;
+
     public enum ControlMode {
         POSITION, NEUTRAL;
     }
@@ -58,5 +60,21 @@ public class ArmControl {
 
     private static double[] updateNeutralMode(double[] jv){
         return Arrays.copyOf(ArmDynamics.calcGravityTorques(jv).getDDRM().data, 3);
+    }
+
+    public static void setModePosition(double[] desPos){
+        currentMode = ControlMode.POSITION;
+        desJv = ArmDynamics.inverseKinematics(desPos);
+        j0Controller.setDest(desJv[0]);
+        j1Controller.setDest(desJv[1]);
+        j2Controller.setDest(desJv[2]);
+    }
+
+    public static void setModePosition(ArmPosition desPos){
+        setModePosition(desPos.cv);
+    }
+
+    public static void setModeNeutral(){
+        currentMode = ControlMode.NEUTRAL;
     }
 }

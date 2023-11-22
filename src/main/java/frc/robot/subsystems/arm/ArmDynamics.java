@@ -12,22 +12,29 @@ import frc.robot.utils.RTime;
 public class ArmDynamics {
     //Constants. All units in inches, secounds, and pounds
     //TODO get moment of inertia values
-    static double g = -386.0885826772;
 
-    static double l0 = 22.0;//joint length
-    static double r0 = 15.0;//COM distance from joint
-    static double i0 = 0.0;//moment of inertia about com
-    static double m0 = 6;//mass
+    static final double l0 = 22.0;//joint length
+    static final double r0 = 15.0;//COM distance from joint
+    static final double i0 = 0.0;//moment of inertia about com
+    static final double m0 = 6;//mass
 
-    static double l1 = 26.0;
-    static double r1 = 18.0;
-    static double i1 = 0.0;
-    static double m1 = 2.68;
+    static final double l1 = 26.0;
+    static final double r1 = 18.0;
+    static final double i1 = 0.0;
+    static final double m1 = 2.68;
 
-    static double l2 = 12.0;
-    static double r2 = 6.0;
-    static double i2 = 0.0;
-    static double m2 = 8.3125;
+    static final double l2 = 12.0;
+    static final double r2 = 6.0;
+    static final double i2 = 0.0;
+    static final double m2 = 8.3125;
+
+    static final double shldrX = 7.0;
+    static final double shldrY = 37.0;
+
+    /**converts from cartesian vector wrt to the center of the robot to cartesian vector wrt the shoulder */
+    protected static double[] robotToShoulder(double[] cv){
+        return new double[] {cv[0] - shldrX, cv[1] - shldrY, cv[2]};
+    }
     
     /**
      * calculates the inertia matrix, which transforms joint accelerations to joint torques
@@ -212,10 +219,6 @@ public class ArmDynamics {
         return new double[]{q0,q1,q2};
     }
 
-    protected static double[] inverseKinematics(ArmPosition pos){
-        double[] cv = new double[] {pos.position.x, pos.position.y, pos.manipAng};
-        return inverseKinematics(cv);
-    }
 
     /**
      * gives the end effector position in cartesian space given its position in joint space

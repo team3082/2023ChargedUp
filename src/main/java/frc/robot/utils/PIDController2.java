@@ -68,5 +68,15 @@ public class PIDController2 {
         return pos - desPos;
     }
 
+    public void setDest(double desPos, double desVel){
+        this.desPos = desPos;
+        this.desVel = desVel;
+    }
+
+    public void setDest(double desPos){
+        this.desPos = desPos;
+        this.desVel = 0;
+    }
+
 
 }
