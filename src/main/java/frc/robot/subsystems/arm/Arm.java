@@ -98,6 +98,8 @@ public class Arm {
     public static final double forearmLen = 26.0;
     public static final double manipLen   = 12.0;
 
+    
+
     // Center of mass calculations
     // Aluminum tubing weight: https://www.easycalculation.com/engineering/mechanical/aluminum-rectangletube-weight.html
     // Note that these numbers are flawed. See the following list for things to check. (I know I should use Monday but idc):
@@ -217,6 +219,8 @@ public class Arm {
         }
         wristMotor.setSelectedSensorPosition(newWristPos, 0, 0);
 
+        
+
         // wristMotor = new TalonSRX(RobotConfig.wristMotorID);
         // wristMotor.configFactoryDefault();
         // wristMotor.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.NormallyOpen);
@@ -277,11 +281,15 @@ public class Arm {
 
     // ====  GETTERS  ====
 
+    
     // Current angles of joints, in radians
     public static double getShldrTheta() { return -shldrCoder.getPosition(); }
     public static double getElbowTheta() { return elbowCoder.getPosition(); }
     public static double getWristTheta() { 
         return ticksToRad(wristMotor.getSelectedSensorPosition(0)) + wristOffset; 
+    }
+    public static double[] getJointAngles(){
+        return new double[] {getShldrTheta(), getElbowTheta(), getWristTheta()};
     }
 
     // Destination angles of joints, in radians

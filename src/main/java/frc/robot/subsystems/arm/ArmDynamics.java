@@ -1,9 +1,11 @@
 package frc.robot.subsystems.arm;
 
+import java.util.Arrays;
 import java.util.function.BiFunction;
 
 import org.ejml.simple.*;
 
+import frc.robot.subsystems.arm.ArmPosition;
 import frc.robot.utils.RTime;
 
 //all units are terms of inches, seconds, pounds, and radians
@@ -160,67 +162,6 @@ public class ArmDynamics {
     }
 
     /**
-     * calculates matrix to convert from elbow coordinates to base coordinates
-     * @param jv joint vector
-     * @return elbow to base matrix
-     */
-    protected static SimpleMatrix calcForwardMatrixb0(double[] jv){
-        double c0 = Math.cos(jv[0]);
-        double s0 = Math.sin(jv[0]);
-        return new SimpleMatrix(4,4, true, new double[]{
-            c0, -s0, 0, l0 * c0,
-            s0, c0, 0, l0 * s0,
-            0, 0, 1, jv[0],
-            0,0,0,1
-        });
-    }
-
-    /**
-     * calculates matrix to convert from wrist coordinates to elbow coordinates
-     * @param jv joint vector
-     * @return wrist to elbow matrix
-     */
-    protected static SimpleMatrix calcForwardMatrix01(double[] jv){
-        double c1 = Math.cos(jv[1]);
-        double s1 = Math.sin(jv[1]);
-        return new SimpleMatrix(4,4, true, new double[]{
-            c1, -s1, 0, l1 * c1,
-            s1, c1, 0, l1 * s1,
-            0, 0, 1, jv[1],
-            0,0,0,1
-        });
-    }
-
-    /**
-     * calculates matrix to convert from end effector coordinates to wrist coordinates
-     * @param jv joint vector
-     * @return End effector to wrist matrix
-     */
-    protected static SimpleMatrix calcForwardMatrix12(double[] jv){
-        double c2 = Math.cos(jv[2]);
-        double s2 = Math.sin(jv[2]);
-        return new SimpleMatrix(4,4, true, new double[]{
-            c2, -s2, 0, l2 * c2,
-            s2, c2, 0, l2 * s2,
-            0, 0, 1, jv[2],
-            0,0,0,1
-        });
-    }
-
-    /**
-     * calculates matrix to convert from endeffector coordinates to base coordinates
-     * @param jv joint vector
-     * @return Forward Kinematics Matrix
-     */
-    protected static SimpleMatrix calcForwardMatrixb2(double[] jv){
-        SimpleMatrix tb0 = calcForwardMatrixb0(jv);
-        SimpleMatrix t01 = calcForwardMatrix01(jv);
-        SimpleMatrix t12 = calcForwardMatrix12(jv);
-
-        return tb0.mult(t01).mult(t12);
-    }
-
-    /**
      * returns a 3x1 column vector containing the torques created by gravity
      * @param jv joint vector
      * @return gravity torques
@@ -243,12 +184,15 @@ public class ArmDynamics {
     /**
      * calculates the needed motor torques to produce a given acceleration in joint space
      */
-    protected static SimpleMatrix calcTorques(double[] jv, double[] desAccel, SimpleMatrix mass){
+    protected static double[] calcTorques(double[] jv, double[] desAccel){
+        SimpleMatrix mass = calcMassMatrix(jv);
         SimpleMatrix gravity = calcGravityTorques(jv);
         SimpleMatrix accel = new SimpleMatrix(3,1,false,desAccel);
 
         SimpleMatrix motorTorques = mass.mult(accel).minus(gravity);
-        return motorTorques;
+        //converting to array
+        double[] ret = motorTorques.getDDRM().data;
+        return Arrays.copyOf(motorTorques.getDDRM().data, 3);
     }
 
     /**
@@ -266,6 +210,11 @@ public class ArmDynamics {
         double q2 = cv[2] - q1 - q0;
         
         return new double[]{q0,q1,q2};
+    }
+
+    protected static double[] inverseKinematics(ArmPosition pos){
+        double[] cv = new double[] {pos.position.x, pos.position.y, pos.manipAng};
+        return inverseKinematics(cv);
     }
 
     /**
