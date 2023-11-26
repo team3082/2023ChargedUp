@@ -10,6 +10,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.SensorTimeBase;
+import com.ctre.phoenixpro.configs.TorqueCurrentConfigs;
+import com.ctre.phoenixpro.controls.TorqueCurrentFOC;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.RobotConfig;
@@ -450,9 +452,6 @@ public class Arm {
         manipulatorAngle = pos.angles[0] + pos.angles[1] + pos.angles[2];
 
         ArmStateController.currentState = pos;
-
-        if (!goingToIntermediate)
-            startTimer(pos, "POSITION (DIRECT)");
     }
 
     //set state of the arm but if its at the pos it moves to another stat
@@ -468,8 +467,6 @@ public class Arm {
         manipulatorAngle = trueDestPos.angles[0] + trueDestPos.angles[1] + trueDestPos.angles[2];
 
         ArmStateController.currentState = intPos;
-
-        startTimer(trueDestPos, "POSITION (INTERMEDIATE)");
     }
 
     public static void setState(double shldrAng, double elbowAng, double wristAng){
@@ -496,8 +493,6 @@ public class Arm {
         elbowMotor.startMotionProfile(generationThread.elbowStream, 5, ControlMode.MotionProfile);
         wristMotor.startMotionProfile(generationThread.wristStream, 5, ControlMode.MotionProfile);
         generationThread.start();
-
-        startTimer(pos, "PROFILE");
     }
 
     /**
@@ -553,11 +548,6 @@ public class Arm {
     }
 
     public static void update() {
-
-        // updateWristCalibration();
-
-        if (atPosition())
-            endTimer();
 
         double[] AFFs = calculateAFFs(getShldrTheta(), getElbowTheta(), getWristTheta());
 
@@ -700,46 +690,35 @@ public class Arm {
         }
     }
 
-    private static boolean recalibratingWrist;
+    /**Relationship between torque and current */
+    private final double falcon500Kt = 0.01816;
+    /**Relationship between torque and current */
+    private final double bagKt = 0.00809;
 
-    public static void recalibrateWrist(){
-        recalibratingWrist = true;
+    private final double elbowRatio = 0;
+    private final double shldrRatio = 0;
+    private final double wristRatio = 0;
+
+    //This math is probably inaccurate, but that should be easily corrected by tuning. Kt was collected from the motor torque curve .csv for each motor  
+    //Applies the desired torque to the wrist joint
+    private void driveWrist(double desTorque){
+        double motorTorque = desTorque * wristRatio;
+        double current = desTorque / bagKt;
+        wristMotor.set(ControlMode.Current, current);
     }
 
-    // DEBUGGING
-    private static boolean timerRunning = false;
-    private static ArmPosition lastTarget = ArmPosition.STARTING;
-    private static String startPosStr;
-    private static String controlModeStr;
-    private static double timerStartSeconds;
-
-    public static void startTimer(ArmPosition targetPos, String controlMode) {
-        timerRunning = true;
-        controlModeStr = controlMode;
-
-        if (lastTarget != null && lastTarget.position.sub(getWristPos()).mag() < 5.)
-            startPosStr = lastTarget.toString();
-        else 
-            startPosStr = getWristPos().toString();
-
-        lastTarget = targetPos;
-        timerStartSeconds = RTime.now();
+    /**Applies the desired torque to the elbow joint */
+    private void driveElbow(double desTorque){
+        double motorTorque = desTorque * elbowRatio;
+        double current = desTorque / falcon500Kt;
+        elbowMotor.set(ControlMode.Current, current);
     }
 
-    public static void endTimer() {
-        if (!timerRunning)
-            return;
-        timerRunning = false;
-
-        String message = String.format(
-            "Arm movement from %s to %s using %s completed in %.2fs", 
-            startPosStr, 
-            lastTarget.toString(), 
-            controlModeStr, 
-            RTime.now() - timerStartSeconds
-        );
-        Telemetry.log(Severity.DEBUG, message);
-        startPosStr = lastTarget.toString();
+    /**Applies the desired torque to the shoulder joint */
+    private void driveShldr(double desTorque){
+        double motorTorque = desTorque * shldrRatio;
+        double current = desTorque / falcon500Kt;
+        shldrMotor.set(ControlMode.Current, current);
     }
 
 }
