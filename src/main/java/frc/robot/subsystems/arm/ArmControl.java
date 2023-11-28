@@ -2,9 +2,6 @@ package frc.robot.subsystems.arm;
 
 
 import java.util.Arrays;
-
-import org.ejml.simple.SimpleMatrix;
-
 import frc.robot.utils.PIDController2;
 import frc.robot.utils.Vector2;
 
@@ -34,16 +31,23 @@ public class ArmControl {
     }
 
     /**only call once per frame.  */
-    public static double[] update(double[] jv){
-
+    public static void update(double[] jv){
+        double[] desTorques;
+        
         switch(currentMode){
             case POSITION:
-                return updatePositionMode(jv);
+                desTorques = updatePositionMode(jv);
+                break;
             case NEUTRAL:
-                return updateNeutralMode(jv);
+                desTorques = updateNeutralMode(jv);
+                break;
             default:
                 throw new RuntimeException("Something Wrong");
         }
+
+        Arm.driveShldr(desTorques[0]);
+        Arm.driveElbow(desTorques[1]);
+        Arm.driveWrist(desTorques[2]);
     }
 
     /**Returns the desired torque values to make the arm approach the set point */
@@ -77,4 +81,6 @@ public class ArmControl {
     public static void setModeNeutral(){
         currentMode = ControlMode.NEUTRAL;
     }
+
+
 }

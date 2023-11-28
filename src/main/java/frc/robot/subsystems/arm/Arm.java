@@ -691,33 +691,33 @@ public class Arm {
     }
 
     /**Relationship between torque and current */
-    private final double falcon500Kt = 0.01816;
+    private static final double falcon500Kt = 0.01816;
     /**Relationship between torque and current */
-    private final double bagKt = 0.00809;
+    private static final double bagKt = 0.00809;
 
-    private final double elbowRatio = 0;
-    private final double shldrRatio = 0;
-    private final double wristRatio = 0;
+    private static final double elbowRatio = 0;
+    private static final double shldrRatio = 0;
+    private static final double wristRatio = 0;
 
     //This math is probably inaccurate, but that should be easily corrected by tuning. Kt was collected from the motor torque curve .csv for each motor  
     //Applies the desired torque to the wrist joint
-    private void driveWrist(double desTorque){
-        double motorTorque = desTorque * wristRatio;
-        double current = desTorque / bagKt;
+    static void driveWrist(double desTorque){
+        double motorTorque = desTorque / wristRatio;
+        double current = motorTorque / bagKt;
         wristMotor.set(ControlMode.Current, current);
     }
 
     /**Applies the desired torque to the elbow joint */
-    private void driveElbow(double desTorque){
-        double motorTorque = desTorque * elbowRatio;
-        double current = desTorque / falcon500Kt;
+    static void driveElbow(double desTorque){
+        double motorTorque = desTorque / elbowRatio;
+        double current = motorTorque / falcon500Kt;
         elbowMotor.set(ControlMode.Current, current);
     }
 
     /**Applies the desired torque to the shoulder joint */
-    private void driveShldr(double desTorque){
-        double motorTorque = desTorque * shldrRatio;
-        double current = desTorque / falcon500Kt;
+    static void driveShldr(double desTorque){
+        double motorTorque = desTorque / shldrRatio;
+        double current = motorTorque / falcon500Kt;
         shldrMotor.set(ControlMode.Current, current);
     }
 
